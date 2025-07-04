@@ -43,14 +43,14 @@
                                 <el-checkbox v-model="judian" label="据点增益" size="mini" border></el-checkbox>
                             </div>
                             <div>
-                                <el-checkbox v-model="ziyuanqixiaoyao" label="紫元气药" size="mini" border></el-checkbox>
-                                <el-checkbox v-model="ziyuanqixiaochi" label="紫元气吃" size="mini" border></el-checkbox>
-                                <el-checkbox v-model="zigongjixiaoyao" label="紫攻击药" size="mini" border></el-checkbox>
-                                <el-checkbox v-model="zigongjixiaochi" label="紫攻击吃" size="mini" border></el-checkbox>
+                                <el-checkbox v-model="紫元气小药" label="紫元气药" size="mini" border></el-checkbox>
+                                <el-checkbox v-model="紫元气小吃" label="紫元气吃" size="mini" border></el-checkbox>
+                                <el-checkbox v-model="紫攻击小药" label="紫攻击药" size="mini" border></el-checkbox>
+                                <el-checkbox v-model="紫攻击小吃" label="紫攻击吃" size="mini" border></el-checkbox>
                                 <br>
-                                <el-checkbox v-model="ziwuqifumo" label="紫武附魔" size="mini" border></el-checkbox>
-                                <el-checkbox v-model="zijiayuanjiu" label="紫家园酒" size="mini" border></el-checkbox>
-                                <el-checkbox v-model="gongjijiayuancai" label="攻家园菜" size="mini" border></el-checkbox>
+                                <el-checkbox v-model="紫武器附魔" label="紫武附魔" size="mini" border></el-checkbox>
+                                <el-checkbox v-model="紫元气酒" label="紫元气酒" size="mini" border></el-checkbox>
+                                <el-checkbox v-model="紫攻击创意" label="攻家园菜" size="mini" border></el-checkbox>
                             </div>
                             <div>
                                 <el-checkbox v-model="mingjiaozhen" label="明教阵眼" size="mini" border></el-checkbox>
@@ -166,15 +166,15 @@
                 jiNengXuLie:[],
                 无间影狱:1.1,
                 //我方面板模块
-                元气:11942,
-                基础攻击:47841,
-                会心值:36836,
-                会效值:2297,
-                破防值:78045,
+                元气:11691,
+                基础攻击:52716,
+                会心值:24525,
+                会效值:9724,
+                破防值:94083,
                 //敌方面板模块
-                化劲:46182,
-                御劲:2425,
-                内防值:15921,
+                化劲:51423,
+                御劲:2632,
+                内防值:16830,
                 //-------------------------------------技能系数模块--万灵当歌版本-----------------------------------------------
                 //绕背驱夜断愁 260*1.1*1.05 * 1.05*1.05  lv29
                 驱夜断愁:1.2604*1.3*1.6*3/**3.14技改 */,//已计算绕背 
@@ -239,13 +239,13 @@
                 tiandi:false,
                 judian:false,
                 chengwu:true,
-                ziyuanqixiaoyao:false,
-                ziyuanqixiaochi:false,
-                zigongjixiaoyao:false,
-                zigongjixiaochi:false,
-                ziwuqifumo:false,
-                zijiayuanjiu:false,
-                gongjijiayuancai:false,
+                紫元气小药:false,
+                紫元气小吃:false,
+                紫攻击小药:false,
+                紫攻击小吃:false,
+                紫武器附魔:false,
+                紫元气酒:false,
+                紫攻击创意:false,
                 mingjiaozhen:false,
                 jianFengBaiDuan:false,
                 yonghuierming:false,
@@ -326,87 +326,86 @@
         methods: {
             //面板元气的计算函数
             yuanqi(){
-                return ((this.元气-0)+this.ziyuanqixiaochi*284+this.ziyuanqixiaoyao*365+this.zijiayuanjiu*208).toFixed(0)
+                return ((this.元气-0)+this.紫元气小吃*284+this.紫元气小药*365+this.紫元气酒*208).toFixed(0)
             },
             //面板基础攻击的计算函数
             jichugongji(){
-                return (((this.基础攻击-0)+this.zigongjixiaoyao*875+this.zigongjixiaochi*680
-                    +this.ziwuqifumo*583+this.gongjijiayuancai*850
-                    +0.181*(this.ziyuanqixiaochi*284+this.ziyuanqixiaoyao*365+this.zijiayuanjiu*208))).toFixed(1)
+                return (((this.基础攻击-0)+this.紫攻击小药*875+this.紫攻击小吃*680
+                    +this.紫武器附魔*583+this.紫攻击创意*850
+                    +0.1*(this.紫元气小吃*284+this.紫元气小药*365+this.紫元气酒*208))).toFixed(0)
                     // 130版本元气收益从1.8变更为1.81
             },
             //面板攻击的计算函数
             面板攻击(){
                 return((this.yuanqi()*1.99)+(this.jichugongji()*1)*
-                (1+0.05*this.mingjiaozhen+0.5*this.judian+0.3*this.jianFengBaiDuan+0.1*this.tiandi)).toFixed(1)
+                (1+0.05*this.mingjiaozhen+0.5*this.judian+0.3*this.jianFengBaiDuan+0.1*this.tiandi)).toFixed(0)
             },
             //面板会心的计算函数
             huixin(){
-                if((((((this.会心值-0)+(this.ziyuanqixiaochi*284+
-                    this.ziyuanqixiaoyao*365+this.zijiayuanjiu*208)*0.3)/197703.0-0)*100)+((this.无间影狱===1?1:0)*10)+13*this.mingjiaozhen).toFixed(1)
+                if((((((this.会心值-0)+(this.紫元气小吃*284+this.紫元气小药*365+this.紫元气酒*208)*0.29)/197703.0-0)*100)+((this.无间影狱===1?1:0)*10)+13*this.mingjiaozhen).toFixed(2)
                 >100){
                     return 100
                 }else{ 
-                return (((((this.会心值-0)+(this.ziyuanqixiaochi*284+
-                this.ziyuanqixiaoyao*365+this.zijiayuanjiu*208)*0.3)/197703.0-0)*100)+((this.无间影狱===1?1:0)*10)+13*this.mingjiaozhen).toFixed(1)
+                return (((((this.会心值-0)+(this.紫元气小吃*284+
+                this.紫元气小药*365+this.紫元气酒*208)*0.29)/197703.0-0)*100)+((this.无间影狱===1?1:0)*10)+13*this.mingjiaozhen).toFixed(2)
                 }
                 // 会心% (130级) ≈ 最终会心等级 / 197703.0
             },
             //面板会效的计算函数
             huixiao(){
-                if(((this.会效值/72844.2)*100+175+((this.无间影狱===1?1:0)*5)+20*this.mingjiaozhen).toFixed(1)>300){
+                if(((this.会效值/72844.2)*100+175+((this.无间影狱===1?1:0)*5)+20*this.mingjiaozhen).toFixed(2)>300){
                     return 300
                 }else{
-                    return ((this.会效值/72844.2)*100+175+((this.无间影狱===1?1:0)*5)+20*this.mingjiaozhen).toFixed(1)
+                    return ((this.会效值/72844.2)*100+175+((this.无间影狱===1?1:0)*5)+20*this.mingjiaozhen).toFixed(2)
                 }
                 // 会心效果% (130级) ≈ 最终会心效果等级 / 72844.2 + 1.75
             },
             //面板破防的计算函数
             pofang(){
-                return ((((this.破防值-0)+36472*this.texiaoyaozhui+0.3*(this.ziyuanqixiaochi*284+this.ziyuanqixiaoyao*365+this.zijiayuanjiu*208))/225957.6)*100).toFixed(1)
+                return ((((this.破防值-0)+36472*this.texiaoyaozhui+0.3*(this.紫元气小吃*284+this.紫元气小药*365+this.紫元气酒*208))/225957.6)*100).toFixed(2)
                 // 破防% (130级) ≈ 最终破防等级 / 225957.6
             },
             //面板内防的计算函数
             neifang(){
                 if(((this.内防值*(1-0.55*this.yonghuierming))/
-                (this.内防值*(1-0.55*this.yonghuierming)+126007.2)*100).toFixed(1)>80){
+                (this.内防值*(1-0.55*this.yonghuierming)+126007.2)*100).toFixed(2)>80){
                     return 80
                 }else{
                     return ((this.内防值*(1-0.55*this.yonghuierming))/
-                    (this.内防值*(1-0.55*this.yonghuierming)+126007.2)*100).toFixed(1)
+                    (this.内防值*(1-0.55*this.yonghuierming)+126007.2)*100).toFixed(2)
                 }
                 // 防御% (130级) ≈ 最终防御等级 / ( 最终防御等级 + 126007.2 )
             },
             //面板化劲的计算函数
             huajin(){
-                if((((this.化劲-0-2756*this.pvpShou)/((this.化劲-0-2756*this.pvpShou)+33046.2)*100+9.9609375)).toFixed(1)>80){
+                if((((this.化劲-0-2756*this.pvpShou)/((this.化劲-0-2756*this.pvpShou)+33046.2)*100+9.9609375)).toFixed(2)>80){
                     return 80
                 }
-                if((((this.化劲-0-2756*this.pvpShou)/((this.化劲-0-2756*this.pvpShou)+33046.2)*100+9.9609375)).toFixed(1)<10){
+                if((((this.化劲-0-2756*this.pvpShou)/((this.化劲-0-2756*this.pvpShou)+33046.2)*100+9.9609375)).toFixed(2)<10){
                     return 10
                 }else{
-                    return (((this.化劲-0-2756*this.pvpShou)/((this.化劲-0-2756*this.pvpShou)+33046.2)*100+9.9609375)).toFixed(1)
+                    return (((this.化劲-0-2756*this.pvpShou)/((this.化劲-0-2756*this.pvpShou)+33046.2)*100+9.9609375)).toFixed(2)
                 }
                 // 化劲% (130级) ≈ 最终化劲等级 / ( 最终化劲等级 + 33046.2 ) + 0.099609375
             },
             //面板御劲的计算函数
             yujin(){
-                if(((this.御劲/197703.0*100)-0).toFixed(1)<0){
+                if(((this.御劲/197703.0*100)-0).toFixed(2)<0){
                     return 0
                 }
-                if(((this.御劲/197703.0*100)-0).toFixed(1)>100){
+                if(((this.御劲/197703.0*100)-0).toFixed(2)>100){
                     return 100
                 }else{
-                    return ((this.御劲/197703.0*100)-0).toFixed(1)
+                    return ((this.御劲/197703.0*100)-0).toFixed(2)
                 }
                 // 御劲% (130级) ≈ 最终御劲等级 / 197703.0
             },
             //面板御效的计算函数
             yuxiao(){
-                if((this.御劲/55123.2*100).toFixed(1)>40){
+                if((this.御劲/55123.2*100).toFixed(2)>40){
                     return 40;
                 }else{
-                    return (this.御劲/55123.2*100).toFixed(1)
+                    return (this.御劲/55123.2*100).toFixed(2)
                 }
                 // 御劲会效% (130级) ≈ 最终御劲会效等级 / 55123.2
             },
