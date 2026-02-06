@@ -66,7 +66,7 @@
                     </div>
                 </div>
                 <el-button type="primary" @click="jiNengDialog = true">技能伤害列表</el-button>
-                <el-button type="primary" @click="lianzhaoDialog = true">连招序列</el-button>
+                <el-button type="primary" @click="lianzhaoDialog = true">技能伤害序列</el-button>
                 <el-dialog
                     title="技能伤害列表"
                     :visible.sync="jiNengDialog"
@@ -114,26 +114,31 @@
                     </span>
                 </el-dialog>
                 <el-dialog
-                    title="连招列表"
+                    title="技能伤害序列"
                     :visible.sync="lianzhaoDialog"
                     width="70%"
                     center>
                     <div>
-                    <el-button type="primary" @click="pushJiNengXuLie('驱夜')">驱夜</el-button>
-                    <el-button type="primary" @click="pushJiNengXuLie('日大')">日大</el-button>
-                    <el-button type="primary" @click="pushJiNengXuLie('日破')">日破</el-button>
-                    <el-button type="primary" @click="pushJiNengXuLie('月破')">月破</el-button>
-                    <el-button type="primary" @click="pushJiNengXuLie('诛邪')">诛邪</el-button>
-                    <el-button type="primary" @click="pushJiNengXuLie('悬象')">悬象</el-button>
-                    <el-button type="primary" @click="pushJiNengXuLie('暗步')">暗步</el-button>
-                    <el-button type="primary" @click="pushJiNengXuLie('日斩')">日斩</el-button>
+                        <h4>技能选择</h4>
+                        <el-button type="primary" @click="pushJiNengXuLie('驱夜')">驱夜</el-button>
+                        <el-button type="primary" @click="pushJiNengXuLie('日大')">日大</el-button>
+                        <el-button type="primary" @click="pushJiNengXuLie('日破')">日破</el-button>
+                        <el-button type="primary" @click="pushJiNengXuLie('月破')">月破</el-button>
+                        <el-button type="primary" @click="pushJiNengXuLie('诛邪')">诛邪</el-button>
+                        <!-- <el-button type="primary" @click="pushJiNengXuLie('悬象')">悬象</el-button> -->
+                        <el-button type="primary" @click="pushJiNengXuLie('日斩')">日斩</el-button>
                     </div>
-                    <div v-for="(d,index) in this.jiNengXuLie" :key="index">
-                        <el-button size="mini" @click="jiNengXuLie.splice(index,1)">{{d}}</el-button>
+                    <div style="margin: 20px 0;">
+                        <h4>当前技能序列</h4>
+                        <div v-for="(d,index) in this.jiNengXuLie" :key="index" style="display: inline-block; margin: 5px;">
+                            <el-button size="mini" @click="jiNengXuLie.splice(index,1)">{{d}}</el-button>
+                        </div>
+                        <el-button type="danger" size="small" @click="clearJiNengXuLie" style="margin-left: 20px;">清空序列</el-button>
                     </div>
-                    <span slot="footer" class="dialog-footer">
-                        <div id="main" style="width: 600px;height:400px;">伤害构成</div>
-                    </span>
+                    <div style="margin: 20px 0;">
+                        <h4>伤害占比</h4>
+                        <div ref="chartRef" style="width: 600px;height:400px;"></div>
+                    </div>
                 </el-dialog>
             </el-col>
             <el-col :span="7">
@@ -159,11 +164,13 @@
 </template>
 
 <script>
+    import * as echarts from 'echarts';
     export default {
         data() {
             return {
                 //技能序列
                 jiNengXuLie:[],
+                chart: null,
                 无间影狱:1.1,
                 //我方面板模块
                 元气:11691,
@@ -258,70 +265,6 @@
                 jiNengDialog: false, //技能伤害框
                 lianzhaoDialog: false, //连招序列框
             };
-            //             option = {
-            //     backgroundColor: '#2c343c',
-
-            //     title: {
-            //         text: 'Customized Pie',
-            //         left: 'center',
-            //         top: 20,
-            //         textStyle: {
-            //             color: '#ccc'
-            //         }
-            //     },
-
-            //     tooltip: {
-            //         trigger: 'item',
-            //         formatter: '{a} <br/>{b} : {c} ({d}%)'
-            //     },
-
-            //     visualMap: {
-            //         show: false,
-            //         min: 80,
-            //         max: 600,
-            //         inRange: {
-            //             colorLightness: [0, 1]
-            //         }
-            //     },
-            //     series: [
-            //         {
-            //             name: '伤害构成',
-            //             type: 'pie',
-            //             radius: '55%',
-            //             center: ['50%', '50%'],
-            //             data: [
-            //                 {value: li, name: '直接访问'},
-            //                 {value: 310, name: '邮件营销'},
-            //                 {value: 274, name: '联盟广告'},
-            //                 {value: 235, name: '视频广告'},
-            //                 {value: 400, name: '搜索引擎'}
-            //             ].sort(function (a, b) { return a.value - b.value; }),
-            //             roseType: 'radius',
-            //             label: {
-            //                 color: 'rgba(255, 255, 255, 0.3)'
-            //             },
-            //             labelLine: {
-            //                 lineStyle: {
-            //                     color: 'rgba(255, 255, 255, 0.3)'
-            //                 },
-            //                 smooth: 0.2,
-            //                 length: 10,
-            //                 length2: 20
-            //             },
-            //             itemStyle: {
-            //                 color: '#c23531',
-            //                 shadowBlur: 200,
-            //                 shadowColor: 'rgba(0, 0, 0, 0.5)'
-            //             },
-
-            //             animationType: 'scale',
-            //             animationEasing: 'elasticOut',
-            //             animationDelay: function (idx) {
-            //                 return Math.random() * 200;
-            //             }
-            //         }
-            //     ]
-            // };
         },
         methods: {
             //面板元气的计算函数
@@ -542,19 +485,110 @@
             },
             pushJiNengXuLie(x){
                 this.jiNengXuLie.push(x)
-                return console.log('打印集合'+this.jiNengXuLie); ;
+                console.log('打印集合'+this.jiNengXuLie);
+                this.updateChart();
             },
-            //崇光死了
-            // chongGuangZhanE3(){
-            //     return (this.chongGuangZhanE*((1-this.huixin()/100)+this.huixin()/100*this.huixiao()/100)*this.面板攻击()*((this.pofang()-0)+100)/100*this.无间影狱
-            //     *(1-this.neifang()/100)*(1-this.huajin()/100) *(1-0.1*this.shengyong)*(1-0.2*this.zhanlong)*(1-0.1*this.yijifuhuodian)*(1-0.2*this.erjifuhuodian)).toFixed(0)
-            
-            // },
-
-            
+            clearJiNengXuLie(){
+                this.jiNengXuLie = [];
+                this.updateChart();
+            },
+            // 获取技能伤害值
+            getSkillDamage(skill) {
+                switch(skill) {
+                    case '驱夜':
+                        return parseInt(this.buhuixinraobeiquye());
+                    case '日大':
+                        return parseInt(this.rida());
+                    case '日破':
+                        return parseInt(this.ripo());
+                    case '月破':
+                        return parseInt(this.yuepo());
+                    case '诛邪':
+                        return parseInt(this.zhuxie());
+                    case '日斩':
+                        return parseInt(this.xinbanbenrizhan());
+                    default:
+                        return 0;
+                }
+            },
+            // 更新图表
+            updateChart() {
+                if (!this.chart) {
+                    this.initChart();
+                }
+                
+                const damageData = [];
+                let totalDamage = 0;
+                
+                // 计算每个技能的伤害
+                this.jiNengXuLie.forEach(skill => {
+                    const damage = this.getSkillDamage(skill);
+                    totalDamage += damage;
+                    
+                    // 查找是否已有该技能的记录
+                    const existing = damageData.find(item => item.name === skill);
+                    if (existing) {
+                        existing.value += damage;
+                    } else {
+                        damageData.push({name: skill, value: damage});
+                    }
+                });
+                
+                // 更新图表数据
+                this.chart.setOption({
+                    title: {
+                        text: '技能伤害占比',
+                        left: 'center'
+                    },
+                    tooltip: {
+                        trigger: 'item',
+                        formatter: '{a} <br/>{b}: {c} ({d}%)'
+                    },
+                    legend: {
+                        orient: 'vertical',
+                        left: 'left',
+                        data: damageData.map(item => item.name)
+                    },
+                    series: [
+                        {
+                            name: '伤害占比',
+                            type: 'pie',
+                            radius: '55%',
+                            center: ['50%', '60%'],
+                            data: damageData,
+                            emphasis: {
+                                itemStyle: {
+                                    shadowBlur: 10,
+                                    shadowOffsetX: 0,
+                                    shadowColor: 'rgba(0, 0, 0, 0.5)'
+                                }
+                            }
+                        }
+                    ]
+                });
+            },
+            // 初始化图表
+            initChart() {
+                this.chart = echarts.init(this.$refs.chartRef);
+                this.updateChart();
+            },
         },
         created() {//校验数据
             // this.pushJiNengXuLie()
+        },
+        watch: {
+            lianzhaoDialog(newVal) {
+                if (newVal) {
+                    this.$nextTick(() => {
+                        this.initChart();
+                    });
+                }
+            }
+        },
+        beforeDestroy() {
+            if (this.chart) {
+                this.chart.dispose();
+            }
         },
         computed:{
             // test驱夜断愁(){
