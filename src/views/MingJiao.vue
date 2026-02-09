@@ -352,56 +352,68 @@
                 }
                 // 御劲会效% (130级) ≈ 最终御劲会效等级 / 55123.2
             },
+            pofangMultiplier(){
+                return ((this.pofang()-0)+100)/100
+            },
+            commonDamageMultiplier(){
+                return (1-this.neifang()/100)*(1-this.huajin()/100)
+                *(1-0.1*this.shengyong)*(1-0.2*this.zhanlong)
+                *(1-0.1*this.yijifuhuodian)*(1-0.2*this.erjifuhuodian)
+            },
+            critDamageMultiplier(){
+                return this.commonDamageMultiplier()
+                *(1+(this.huixiao()-100)/100*(100-this.yuxiao())/100)
+            },
+            damageBase(skillCoeff, isCrit){
+                const baseDamage = skillCoeff*this.面板攻击()*this.pofangMultiplier()*this.无间影狱
+                return baseDamage*(isCrit ? this.critDamageMultiplier() : this.commonDamageMultiplier())
+            },
             //技能伤害列表中的 不会心绕背驱夜
             buhuixinraobeiquye(){   
-                return (1*(1+0.12+0.05*this.chengwu)*this.驱夜断愁*this.面板攻击()*((this.pofang()-0)+100)/100*this.无间影狱
-                *(1-this.neifang()/100)*(1-this.huajin()/100) *(1-0.1*this.shengyong)*(1-0.2*this.zhanlong)*(1-0.1*this.yijifuhuodian)*(1-0.2*this.erjifuhuodian)).toFixed(0)
+                const skillCoeff = (1+0.12+0.05*this.chengwu)*this.驱夜断愁
+                return this.damageBase(skillCoeff, false).toFixed(0)
             },
             //技能伤害列表中的 单体超凡日破
             dantichaofanripo(){
-                return (1*(1+0.12+0.2+0.05*this.chengwu)*3.327335615780859*this.面板攻击()*((this.pofang()-0)+100)/100*this.无间影狱
-                *(1-this.neifang()/100)*(1-this.huajin()/100) *(1-0.1*this.shengyong)*(1-0.2*this.zhanlong)*(1-0.1*this.yijifuhuodian)*(1-0.2*this.erjifuhuodian)).toFixed(0)
+                const skillCoeff = (1+0.12+0.2+0.05*this.chengwu)*3.327335615780859
+                return this.damageBase(skillCoeff, false).toFixed(0)
             },
             //技能伤害列表中的 日破
             ripo(){
-                return (1*(1+0.12+0.05*this.chengwu)*3.327335615780859*this.面板攻击()*((this.pofang()-0)+100)/100*this.无间影狱
-                *(1-this.neifang()/100)*(1-this.huajin()/100) *(1-0.1*this.shengyong)*(1-0.2*this.zhanlong)*(1-0.1*this.yijifuhuodian)*(1-0.2*this.erjifuhuodian)).toFixed(0)
+                const skillCoeff = (1+0.12+0.05*this.chengwu)*3.327335615780859
+                return this.damageBase(skillCoeff, false).toFixed(0)
             },
             //技能伤害列表中的 月破
             yuepo(){
-                return (1*(1+0.12+0.05*this.chengwu)*0.5525*3*this.面板攻击()*((this.pofang()-0)+100)/100*this.无间影狱
-                *(1-this.neifang()/100)*(1-this.huajin()/100) *(1-0.1*this.shengyong)*(1-0.2*this.zhanlong)*(1-0.1*this.yijifuhuodian)*(1-0.2*this.erjifuhuodian)).toFixed(0)
+                const skillCoeff = (1+0.12+0.05*this.chengwu)*0.5525*3
+                return this.damageBase(skillCoeff, false).toFixed(0)
             },
             //技能伤害列表中的 rida
             rida(){
-                return ((4.1668*this.面板攻击()*((this.pofang()-0)+100)/100)*this.无间影狱
-                *(1-this.neifang()/100)*(1-this.huajin()/100) *(1-0.1*this.shengyong)*(1-0.2*this.zhanlong)*(1-0.1*this.yijifuhuodian)*(1-0.2*this.erjifuhuodian)).toFixed(0)
+                return this.damageBase(4.1668, false).toFixed(0)
             },
             //技能伤害列表中的 诛邪
             zhuxie(){
-                return (1*(1+0.12+0.05*this.chengwu)*2.707089*this.面板攻击()*((this.pofang()-0)+100)/100*this.无间影狱
-                *(1-this.neifang()/100)*(1-this.huajin()/100) *(1-0.1*this.shengyong)*(1-0.2*this.zhanlong)*(1-0.1*this.yijifuhuodian)*(1-0.2*this.erjifuhuodian)).toFixed(0)
+                const skillCoeff = (1+0.12+0.05*this.chengwu)*2.707089
+                return this.damageBase(skillCoeff, false).toFixed(0)
             },
             //技能伤害列表中的 超凡诛邪
             chaofanzhuxie(){
-                return (1*(1+0.12/**秘籍*/+0.2+0.05*this.chengwu)*2.707089*this.面板攻击()*((this.pofang()-0)+100)/100*this.无间影狱
-                *(1-this.neifang()/100)*(1-this.huajin()/100) *(1-0.1*this.shengyong)*(1-0.2*this.zhanlong)*(1-0.1*this.yijifuhuodian)*(1-0.2*this.erjifuhuodian)).toFixed(0)
+                const skillCoeff = (1+0.12/**秘籍*/+0.2+0.05*this.chengwu)*2.707089
+                return this.damageBase(skillCoeff, false).toFixed(0)
             },
             //技能伤害列表中的 三段日月晦
             sanduanriyuehui(){
-                return ((1.265625*4*this.面板攻击()*((this.pofang()-0)+100)/100)*this.无间影狱
-                *(1-this.neifang()/100)*(1-this.huajin()/100) *(1-0.1*this.shengyong)*(1-0.2*this.zhanlong)*(1-0.1*this.yijifuhuodian)*(1-0.2*this.erjifuhuodian)).toFixed(0)
+                return this.damageBase(1.265625*4, false).toFixed(0)
             },
                 //  1.265625*4
             //技能伤害列表中的 手附魔
             shoudafumo(){
-                return ((0.46875*this.面板攻击()*((this.pofang()-0)+100)/100)*this.无间影狱
-                *(1-this.neifang()/100)*(1-this.huajin()/100) *(1-0.1*this.shengyong)*(1-0.2*this.zhanlong)*(1-0.1*this.yijifuhuodian)*(1-0.2*this.erjifuhuodian)).toFixed(0)
+                return this.damageBase(0.46875, false).toFixed(0)
             },
             //技能伤害列表中的 鞋附魔
             xiedafumo(){
-                return ((0.52084*this.面板攻击()*((this.pofang()-0)+100)/100)*this.无间影狱
-                *(1-this.neifang()/100)*(1-this.huajin()/100) *(1-0.1*this.shengyong)*(1-0.2*this.zhanlong)*(1-0.1*this.yijifuhuodian)*(1-0.2*this.erjifuhuodian)).toFixed(0)
+                return this.damageBase(0.52084, false).toFixed(0)
             },
             //技能伤害列表中的 橙戒指
             chengjiezhi(){
@@ -410,58 +422,53 @@
             },
             //技能伤害列表中的 橙武特效
             chengwutexiao(){
-                return ((2*this.面板攻击()*((this.pofang()-0)+100)/100)*this.无间影狱
-                *(1-this.neifang()/100)*(1-this.huajin()/100) *(1-0.1*this.shengyong)*(1-0.2*this.zhanlong)*(1-0.1*this.yijifuhuodian)*(1-0.2*this.erjifuhuodian)).toFixed(0)
+                return this.damageBase(2, false).toFixed(0)
             },
             //技能伤害列表中的 会心绕背驱夜
             huixinraobeiquye(){
-                return (1*(1+0.12+0.05*this.chengwu)*this.驱夜断愁*this.面板攻击()*((this.pofang()-0)+100)/100*this.无间影狱
-                *(1-this.neifang()/100)*(1-this.huajin()/100)*(1+(this.huixiao()-100)/100*(100-this.yuxiao())/100)*(1-0.1*this.shengyong)*(1-0.2*this.zhanlong)*(1-0.1*this.yijifuhuodian)*(1-0.2*this.erjifuhuodian)).toFixed(0)
+                const skillCoeff = (1+0.12+0.05*this.chengwu)*this.驱夜断愁
+                return this.damageBase(skillCoeff, true).toFixed(0)
             },
             //技能伤害列表中的 会心日破
             huixinripo(){
-                return (1*(1+0.12+0.05*this.chengwu)*1.6574*this.面板攻击()*((this.pofang()-0)+100)/100*this.无间影狱
-                *(1-this.neifang()/100)*(1-this.huajin()/100)*(1+(this.huixiao()-100)/100*(100-this.yuxiao())/100)*(1-0.1*this.shengyong)*(1-0.2*this.zhanlong)*(1-0.1*this.yijifuhuodian)*(1-0.2*this.erjifuhuodian)).toFixed(0)
+                const skillCoeff = (1+0.12+0.05*this.chengwu)*1.6574
+                return this.damageBase(skillCoeff, true).toFixed(0)
             },
             //技能伤害列表中的 会心超凡日破
             huixindantichaofanripo(){
-                return (1*(1+0.12+0.2+0.05*this.chengwu)*1.6574*this.面板攻击()*((this.pofang()-0)+100)/100*this.无间影狱
-                *(1-this.neifang()/100)*(1-this.huajin()/100)*(1+(this.huixiao()-100)/100*(100-this.yuxiao())/100)*(1-0.1*this.shengyong)*(1-0.2*this.zhanlong)*(1-0.1*this.yijifuhuodian)*(1-0.2*this.erjifuhuodian)).toFixed(0)
+                const skillCoeff = (1+0.12+0.2+0.05*this.chengwu)*1.6574
+                return this.damageBase(skillCoeff, true).toFixed(0)
             },
             //技能伤害列表中的 会心月破
             huixinyuepo(){
-                return (1*(1+0.12+0.05*this.chengwu)*0.5525*3*this.面板攻击()*((this.pofang()-0)+100)/100*this.无间影狱
-                *(1-this.neifang()/100)*(1-this.huajin()/100)*(1+(this.huixiao()-100)/100*(100-this.yuxiao())/100)*(1-0.1*this.shengyong)*(1-0.2*this.zhanlong)*(1-0.1*this.yijifuhuodian)*(1-0.2*this.erjifuhuodian)).toFixed(0)
+                const skillCoeff = (1+0.12+0.05*this.chengwu)*0.5525*3
+                return this.damageBase(skillCoeff, true).toFixed(0)
             },
             //技能伤害列表中的 会心rida
             huixinrida(){
-                return ((4.1668*this.面板攻击()*((this.pofang()-0)+100)/100)*this.无间影狱
-                *(1-this.neifang()/100)*(1-this.huajin()/100)*(1+(this.huixiao()-100)/100*(100-this.yuxiao())/100)*(1-0.1*this.shengyong)*(1-0.2*this.zhanlong)*(1-0.1*this.yijifuhuodian)*(1-0.2*this.erjifuhuodian)).toFixed(0)
+                return this.damageBase(4.1668, true).toFixed(0)
             },
             //技能伤害列表中的 会心诛邪
             huixinzhuxie(){
-                return (1*(1+0.12+0.05*this.chengwu)*2.707089*this.面板攻击()*((this.pofang()-0)+100)/100*this.无间影狱
-                *(1-this.neifang()/100)*(1-this.huajin()/100)*(1+(this.huixiao()-100)/100*(100-this.yuxiao())/100)*(1-0.1*this.shengyong)*(1-0.2*this.zhanlong)*(1-0.1*this.yijifuhuodian)*(1-0.2*this.erjifuhuodian)).toFixed(0)
+                const skillCoeff = (1+0.12+0.05*this.chengwu)*2.707089
+                return this.damageBase(skillCoeff, true).toFixed(0)
             },
             //技能伤害列表中的 会心超凡诛邪
             huixinchaofanzhuxie(){
-                return (1*(1+0.12+0.2+0.05*this.chengwu)*2.707089*this.面板攻击()*((this.pofang()-0)+100)/100*this.无间影狱
-                *(1-this.neifang()/100)*(1-this.huajin()/100)*(1+(this.huixiao()-100)/100*(100-this.yuxiao())/100)*(1-0.1*this.shengyong)*(1-0.2*this.zhanlong)*(1-0.1*this.yijifuhuodian)*(1-0.2*this.erjifuhuodian)).toFixed(0)
+                const skillCoeff = (1+0.12+0.2+0.05*this.chengwu)*2.707089
+                return this.damageBase(skillCoeff, true).toFixed(0)
             },
            //技能伤害列表中的 会心三段日月晦
             huixinsanduanriyuehui(){
-                return ((1.265625*4*this.面板攻击()*((this.pofang()-0)+100)/100)*this.无间影狱
-                *(1-this.neifang()/100)*(1-this.huajin()/100)*(1+(this.huixiao()-100)/100*(100-this.yuxiao())/100)*(1-0.1*this.shengyong)*(1-0.2*this.zhanlong)*(1-0.1*this.yijifuhuodian)*(1-0.2*this.erjifuhuodian)).toFixed(0)
+                return this.damageBase(1.265625*4, true).toFixed(0)
             },
             //技能伤害列表中的 会心手附魔
             huixinshoudafumo(){
-                return ((0.46875*this.面板攻击()*((this.pofang()-0)+100)/100)*this.无间影狱
-                *(1-this.neifang()/100)*(1-this.huajin()/100)*(1+(this.huixiao()-100)/100*(100-this.yuxiao())/100)*(1-0.1*this.shengyong)*(1-0.2*this.zhanlong)*(1-0.1*this.yijifuhuodian)*(1-0.2*this.erjifuhuodian)).toFixed(0)
+                return this.damageBase(0.46875, true).toFixed(0)
             },
             //技能伤害列表中的 会心鞋附魔
             huixinxiedafumo(){
-                return ((0.52084*this.面板攻击()*((this.pofang()-0)+100)/100)*this.无间影狱
-                *(1-this.neifang()/100)*(1-this.huajin()/100)*(1+(this.huixiao()-100)/100*(100-this.yuxiao())/100)*(1-0.1*this.shengyong)*(1-0.2*this.zhanlong)*(1-0.1*this.yijifuhuodian)*(1-0.2*this.erjifuhuodian)).toFixed(0)
+                return this.damageBase(0.52084, true).toFixed(0)
             },
             //技能伤害列表中的 会心橙戒指
             huixinchengjiezhi(){
@@ -469,16 +476,15 @@
             },
             //技能伤害列表中的 会心橙武特效
             huixinchengwutexiao(){
-                return ((2*this.面板攻击()*((this.pofang()-0)+100)/100)*this.无间影狱
-                *(1-this.neifang()/100)*(1-this.huajin()/100)*(1+(this.huixiao()-100)/100*(100-this.yuxiao())/100)*(1-0.1*this.shengyong)*(1-0.2*this.zhanlong)*(1-0.1*this.yijifuhuodian)*(1-0.2*this.erjifuhuodian)).toFixed(0)
+                return this.damageBase(2, true).toFixed(0)
             },
             xinbanbenrizhan(){
-                return (1*1.25*1.25*2*(1+0.22)*1.18540627734375*this.面板攻击()*((this.pofang()-0)+100)/100*this.无间影狱
-                *(1-this.neifang()/100)*(1-this.huajin()/100) *(1-0.1*this.shengyong)*(1-0.2*this.zhanlong)*(1-0.1*this.yijifuhuodian)*(1-0.2*this.erjifuhuodian)).toFixed(0)
+                const skillCoeff = 1*1.25*1.25*2*(1+0.22)*1.18540627734375
+                return this.damageBase(skillCoeff, false).toFixed(0)
             },
             huixinxinbanbenrizhan(){
-                return ((1*1.25*1.25*(1+0.22)*1.18540627734375+1.18540627734375)*this.面板攻击()*((this.pofang()-0)+100)/100*this.无间影狱
-                *(1-this.neifang()/100)*(1-this.huajin()/100)*(1+(this.huixiao()-100)/100*(100-this.yuxiao())/100)*(1-0.1*this.shengyong)*(1-0.2*this.zhanlong)*(1-0.1*this.yijifuhuodian)*(1-0.2*this.erjifuhuodian)).toFixed(0)
+                const skillCoeff = (1*1.25*1.25*(1+0.22)*1.18540627734375+1.18540627734375)
+                return this.damageBase(skillCoeff, true).toFixed(0)
             },
             huiXinDongRuoGuanHuo(){
                 
