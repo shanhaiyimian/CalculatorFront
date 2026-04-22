@@ -1,7 +1,7 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
-import MingJiao from '../views/MingJiao.vue'
-import TangMen from '../views/TangMen.vue'
+import FenYing from '../views/FenYing.vue'
+import MingZun from '../views/MingZun.vue'
 import AppBackGround from '@/views/AppBackGround'
 
 Vue.use(VueRouter);
@@ -12,12 +12,12 @@ const routes = [
 		component:AppBackGround,
 	},
 	{
-		path:'/mingjiao',
-		component:MingJiao,
+		path:'/fenying',
+		component:FenYing,
 	},
 	{
-		path:'/tangmen',
-		component:TangMen,
+		path:'/mingzun',
+		component:MingZun,
 	},
 ];
 

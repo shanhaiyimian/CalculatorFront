@@ -1,5 +1,5 @@
 <template>
-    <div class="tangmen">
+    <div class="mingzun">
         <el-row :gutter="10" style="margin:0px">
             <el-col :span="17" >
                 <div class="grid-content bg-purple">
@@ -22,7 +22,7 @@
                             御劲数值：<input type="text" name="yujin" v-model="yujin1" placeholder="请输入具体的御劲数值" required>
                             外防数值：<input type="text" name="waifang" v-model="waifang1" placeholder="请输入具体的外防数值" required>
                         </div>
-                        
+
                     </div>
                     <div class="zengjianyi">
                         <h3>选择我方增益和奇穴</h3>
@@ -50,10 +50,7 @@
                                 <el-checkbox v-model="yicengyinzhui" label="1层隐追" size="mini" border></el-checkbox>
                                 <el-checkbox v-model="dalei" label="天策大雷" size="mini" border></el-checkbox>
                                 <el-checkbox v-model="jingyuzhen" label="鲸鱼阵" size="mini" border></el-checkbox>
-
-
                             </div>
-
                         </div>
                         <h3>选择敌方减伤</h3>
                         <el-checkbox v-model="shengyong" label="圣咏" size="mini" border></el-checkbox>
@@ -80,14 +77,11 @@
                     夺魄箭：<span>{{huixinduopo()}}</span><br>
                     单隐追：<span>{{danyinzhui()}}</span><br>
                     双隐追：<span>{{shuangyinzhui()}}</span><br>
-
                     百里追魂：<span>{{bailizhuihun()}}</span><br>
-                    
                     手大附魔：<span>{{huixinshoudafumo()}}</span><br>
                     鞋大附魔：<span>{{huixinxiedafumo()}}</span><br>
                     橙戒指：<span>{{huixinchengjiezhi()}}</span><hr>
-                    <span slot="footer" class="dialog-footer">
-                    </span>
+                    <span slot="footer" class="dialog-footer"></span>
                 </el-dialog>
                 <el-dialog
                     title="连招伤害列表"
@@ -95,8 +89,7 @@
                     width="30%"
                     center>
                     <span>数据不足还在扒拉 别急</span>
-                    <span slot="footer" class="dialog-footer">
-                    </span>
+                    <span slot="footer" class="dialog-footer"></span>
                 </el-dialog>
             </el-col>
             <el-col :span="7">
@@ -122,6 +115,8 @@
 </template>
 
 <script>
+    import { normalDamage, critDamage } from '@/common/skills/mingzun';
+
     export default {
         data() {
             return {
@@ -135,7 +130,6 @@
                 huajin1:19296,
                 yujin1:362,
                 waifang1:5915,
-
 
                 judian:false,
                 chengwu:false,
@@ -160,192 +154,111 @@
                 yijifuhuodian:false,
                 erjifuhuodian:false,
 
-                // activeNames: ['jinengshanghai'],
-                
-                // quyeduanchou:1.640625,
-                // ripo:1.6543065,
-                // yuepo:0.54747,
-                // zhuxie:2.707089,
-                // rida:1.0417,
-                // shoufumo:0.46875,
-                // xiefumo:0.52084,
-                // jiezhifumo:'',
-                
                 centerDialogVisible: false,
                 centerDialogVisible2: false
             }
         },
+        computed: {
+            //通用计算上下文，打包给 common/skills/mingzun 使用
+            ctx() {
+                return {
+                    面板攻击: +this.mianbangongji(),
+                    武器伤害: +this.wuqishanghai(),
+                    pofang: +this.pofang(),
+                    waifang: +this.waifang(),
+                    huajin: +this.huajin(),
+                    huixiao: +this.huixiao(),
+                    yuxiao: +this.yuxiao(),
+                    chengwu: this.chengwu ? 1 : 0,
+                    tiexuedajiangjun: this.tiexuedajiangjun ? 1 : 0,
+                    zhuyijipo: this.zhuyijipo ? 1 : 0,
+                    shengyong: this.shengyong ? 1 : 0,
+                    zhanlong: this.zhanlong ? 1 : 0,
+                    yijifuhuodian: this.yijifuhuodian ? 1 : 0,
+                    erjifuhuodian: this.erjifuhuodian ? 1 : 0,
+                };
+            },
+        },
         methods: {
-            //面板力道的计算函数
+            //面板力道
             lidao(){
                 return ((this.lidao1-0)*(1+0.03*this.jingyuzhen)
                 +this.zilidaoxiaochi*284+this.zilidaoxiaoyao*365+this.zijiayuanjiu*208).toFixed(0)
             },
-            //面板基础攻击的计算函数
+            //面板基础攻击
             jichugongji(){
                 return ((((this.jichugongji1-0)+this.zigongjixiaoyao*733+this.zigongjixiaochi*
                     570+this.ziwuqifumo*489+this.gongjijiayuancai*708+
                     0.15*((this.lidao1-0)*(0.03*(this.jingyuzhen-0))
                     +this.zilidaoxiaochi*284+this.zilidaoxiaoyao*365+this.zijiayuanjiu*208)))).toFixed(1)
-            }, 
-            //面板攻击的计算函数
+            },
+            //面板攻击
             mianbangongji(){
                 return((this.lidao()*1.45)+this.jichugongji()*1*(1+0.25*this.dalei+0.5*this.judian)).toFixed(1)
             },
-            //面板会心的计算函数
+            //面板会心
             huixin(){
-                if(((((this.huixin1-0+0.59*(this.zilidaoxiaochi*284+this.zilidaoxiaoyao*365+this.zijiayuanjiu*208))/78622.5-0)*100)+10*this.qiufengsanying+15*this.xinwupangwu).toFixed(1)
-                >100){
-                    return 100
-                }else{ 
-                return ((((this.huixin1-0+0.59*(this.zilidaoxiaochi*284+this.zilidaoxiaoyao*365+this.zijiayuanjiu*208))/78622.5-0)*100)+10*this.qiufengsanying+15*this.xinwupangwu).toFixed(1)
-                }
+                const v = ((((this.huixin1-0+0.59*(this.zilidaoxiaochi*284+this.zilidaoxiaoyao*365+this.zijiayuanjiu*208))/78622.5-0)*100)+10*this.qiufengsanying+15*this.xinwupangwu);
+                return v > 100 ? 100 : v.toFixed(1);
             },
-            //面板会效的计算函数
+            //面板会效
             huixiao(){
-                if((((this.huixiao1/27513.75)*100+175)+10*this.qiufengsanying+30*this.xinwupangwu).toFixed(1)>300){
-                    return 300
-                }else{
-                    return (((this.huixiao1/27513.75)*100+175)+10*this.qiufengsanying+30*this.xinwupangwu).toFixed(1)
-                }
+                const v = (((this.huixiao1/27513.75)*100+175)+10*this.qiufengsanying+30*this.xinwupangwu);
+                return v > 300 ? 300 : v.toFixed(1);
             },
-            //面板破防的计算函数
+            //面板破防
             pofang(){
                 return (((((this.pofang1-0)+6048*this.texiaoyaozhui+0.3*(this.zilidaoxiaochi*284+this.zilidaoxiaoyao*365+this.zijiayuanjiu*208))*(1+0.2*this.dalei+0.2*this.jingyuzhen))
                 /78622.5)*100).toFixed(1)
             },
-            //面板外防的计算函数
+            //面板外防
             waifang(){
-                if(((this.waifang1*(1+0.5*this.judian))/
-                (this.waifang1*(1+0.5*this.judian)+42000.75)*100).toFixed(1)>80){
-                    return 80
-                }else{
-                    return ((this.waifang1*(1+0.5*this.judian) )/
-                    (this.waifang1*(1+0.5*this.judian)+42000.75)*100).toFixed(1)
-                }
+                const eff = this.waifang1*(1+0.5*this.judian);
+                const v = eff/(eff+42000.75)*100;
+                return v > 80 ? 80 : v.toFixed(1);
             },
-            //面板化劲的计算函数
+            //面板化劲
             huajin(){
-                if(((((this.huajin1-0)*(1-0.05*this.yicengyinzhui))/((this.huajin1-0)*(1-0.05*this.yicengyinzhui)+11385.0)*100+10)).toFixed(1)>80){
-                    return 80
-                }
-                if(((((this.huajin1-0)*(1-0.05*this.yicengyinzhui))/((this.huajin1-0)*(1-0.05*this.yicengyinzhui)+11385.0)*100+10)).toFixed(1)<10){
-                    return 10
-                }else{
-                    return ((((this.huajin1-0)*(1-0.05*this.yicengyinzhui))/((this.huajin1-0)*(1-0.05*this.yicengyinzhui)+11385.0)*100+10)).toFixed(1)
-                }
+                const eff = (this.huajin1-0)*(1-0.05*this.yicengyinzhui);
+                const v = eff/(eff+11385.0)*100+10;
+                if (v > 80) return 80;
+                if (v < 10) return 10;
+                return v.toFixed(1);
             },
-            //面板御劲的计算函数
+            //面板御劲
             yujin(){
-                if(((this.yujin1/78622.5*100)).toFixed(1)<0){
-                    return 0
-                }
-                if(((this.yujin1/78622.5*100)).toFixed(1)>100){
-                    return 100
-                }else{
-                    return ((this.yujin1/78622.5*100)).toFixed(1)
-                }
+                const v = this.yujin1/78622.5*100;
+                if (v < 0) return 0;
+                if (v > 100) return 100;
+                return v.toFixed(1);
             },
-            //面板御效的计算函数
+            //面板御效
             yuxiao(){
-                if((this.yujin1/21095.25*100).toFixed(1)>40){
-                    return 40;
-                }else{
-                    return (this.yujin1/21095.25*100).toFixed(1)
-                }
+                const v = this.yujin1/21095.25*100;
+                return v > 40 ? 40 : v.toFixed(1);
             },
             wuqishanghai(){
                 return ((this.maxwuqishanghai-0)+(this.minwuqishanghai-0))/2
             },
-            //技能伤害列表中的 夺魄箭
-            duopo(){
-                return (1.9688*(1+0.07+0.05*(this.chengwu-0))*(this.mianbangongji()+this.wuqishanghai()*2)*((this.pofang()-0)+100)/100*(1+0.5*this.tiexuedajiangjun)
-                *(1+0.2*this.zhuyijipo)*(1-this.waifang()/100)*(1-this.huajin()/100)*(1-0.1*this.shengyong)*(1-0.2*this.zhanlong)*(1-0.1*this.yijifuhuodian)*(1-0.2*this.erjifuhuodian)).toFixed(0)
-            },
+            //----------------- 技能伤害（接入 common/skills/mingzun） -----------------
+            duopo()              { return normalDamage.夺魄箭(this.ctx).toFixed(0); },
+            shoudafumo()         { return normalDamage.手大附魔(this.ctx).toFixed(0); },
+            xiedafumo()          { return normalDamage.鞋大附魔(this.ctx).toFixed(0); },
+            chengjiezhi()        { return normalDamage.橙戒指(this.ctx).toFixed(0); },
 
-            
-            //技能伤害列表中的 弩箭制造
-
-
-
-            //技能伤害列表中的 手附魔
-            shoudafumo(){
-                return ((0.3813*this.mianbangongji()*((this.pofang()-0)+100)/100)*(1+0.5*this.tiexuedajiangjun)
-                *(1-this.waifang()/100)*(1-this.huajin()/100) *(1-0.1*this.shengyong)*(1-0.2*this.zhanlong)*(1-0.1*this.yijifuhuodian)*(1-0.2*this.erjifuhuodian)).toFixed(0)
-            },
-            //技能伤害列表中的 鞋附魔
-            xiedafumo(){
-                return ((0.4688*this.mianbangongji()*((this.pofang()-0)+100)/100)*(1+0.5*this.tiexuedajiangjun)
-                *(1-this.waifang()/100)*(1-this.huajin()/100) *(1-0.1*this.shengyong)*(1-0.2*this.zhanlong)*(1-0.1*this.yijifuhuodian)*(1-0.2*this.erjifuhuodian)).toFixed(0)
-            },
-            //技能伤害列表中的 橙戒指
-            chengjiezhi(){
-                return (11250*(1+0.5*this.tiexuedajiangjun)
-                *(1-this.waifang()/100)*(1-this.huajin()/100) *(1-0.1*this.shengyong)*(1-0.2*this.zhanlong)*(1-0.1*this.yijifuhuodian)*(1-0.2*this.erjifuhuodian)).toFixed(0);
-            },
-            
-            //----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-            //会心技能伤害列表中的 会心夺魄箭
-            huixinduopo(){
-                return (1.9688*(1+0.07+0.05*(this.chengwu-0))*(this.mianbangongji()+this.wuqishanghai()*2)*((this.pofang()-0)+100)/100*(1+0.5*this.tiexuedajiangjun)
-                *(1+0.2*this.zhuyijipo)*(1-this.waifang()/100)*(1-this.huajin()/100)*(1+(this.huixiao()+10-100)/100*(100-this.yuxiao())/100)*(1-0.1*this.shengyong)*(1-0.2*this.zhanlong)*(1-0.1*this.yijifuhuodian)*(1-0.2*this.erjifuhuodian)).toFixed(0)
-            },
-            //会心技能伤害列表中的 单隐追
-            danyinzhui(){
-                return (2.7188*(1+0.12)*1.1*((this.mianbangongji()-0)+this.wuqishanghai()*3)
-                *((this.pofang()-0)+100)/100*(1+0.5*this.tiexuedajiangjun)
-                *(1+0.2*this.zhuyijipo)*(1-this.waifang()/100*1*(1-(0.5+0.2)))
-                *(1-this.huajin()/100)*(1+(this.huixiao()+40-100)/100*(100-this.yuxiao())/100)
-                *(1-0.1*this.shengyong)*(1-0.2*this.zhanlong)*(1-0.1*this.yijifuhuodian)*(1-0.2*this.erjifuhuodian)).toFixed(0)
-            },
-            //会心技能伤害列表中的 双隐追
-            shuangyinzhui(){
-                return (2.7188*(1+0.12)*1.1*((this.mianbangongji()-0)+this.wuqishanghai()*3)
-                *((this.pofang()-0)+100)/100*(1+0.5*this.tiexuedajiangjun)
-                *(1+0.2*this.zhuyijipo)*(1-this.waifang()/100*1*(1-(0.5+0.2)))
-                *(1-this.huajin()/100)*(1+(this.huixiao()+40-100)/100*(100-this.yuxiao())/100)
-                *(1-0.1*this.shengyong)*(1-0.2*this.zhanlong)*(1-0.1*this.yijifuhuodian)*(1-0.2*this.erjifuhuodian)+
-                2.17504*(1+0.12)*((this.mianbangongji()-0))*((this.pofang()-0)+100)/100*(1+0.5*this.tiexuedajiangjun)
-                *(1-this.waifang()/100*1*(1-0.2))*(1-this.huajin()/100)
-                *(1+(this.huixiao()-100)/100*(100-this.yuxiao())/100)*(1-0.1*this.shengyong)*(1-0.2*this.zhanlong)
-                *(1-0.1*this.yijifuhuodian)*(1-0.2*this.erjifuhuodian)).toFixed(0)
-
-            },
-            //会心技能伤害列表中的 百里追魂
-            bailizhuihun(){
-                return (10.5875*((this.mianbangongji()-0)+this.wuqishanghai()*3.3)*((this.pofang()-0)+100)/100*(1+0.5*this.tiexuedajiangjun)
-                *(1-this.huajin()/100)*(1+(this.huixiao()-100)/100*(100-this.yuxiao())/100)*(1-0.1*this.shengyong)*(1-0.2*this.zhanlong)*(1-0.1*this.yijifuhuodian)*(1-0.2*this.erjifuhuodian)).toFixed(0)
-            
-            },
-            //会心技能伤害列表中的 会心手附魔
-            huixinshoudafumo(){
-                return ((0.3813*this.mianbangongji()*((this.pofang()-0)+100)/100)*(1+0.5*this.tiexuedajiangjun)
-                *(1-this.waifang()/100)*(1-this.huajin()/100)*(1+(this.huixiao()-100)/100*(100-this.yuxiao())/100)*(1-0.1*this.shengyong)*(1-0.2*this.zhanlong)*(1-0.1*this.yijifuhuodian)*(1-0.2*this.erjifuhuodian)).toFixed(0)
-            },
-            //会心技能伤害列表中的 会心鞋附魔
-            huixinxiedafumo(){
-                return ((0.4688*this.mianbangongji()*((this.pofang()-0)+100)/100)*(1+0.5*this.tiexuedajiangjun)
-                *(1-this.waifang()/100)*(1-this.huajin()/100)*(1+(this.huixiao()-100)/100*(100-this.yuxiao())/100)*(1-0.1*this.shengyong)*(1-0.2*this.zhanlong)*(1-0.1*this.yijifuhuodian)*(1-0.2*this.erjifuhuodian)).toFixed(0)
-            },
-            //会心技能伤害列表中的 会心橙戒指
-            huixinchengjiezhi(){
-                return (11250*(1+0.5*this.tiexuedajiangjun)
-                *(1-this.waifang()/100)*(1-this.huajin()/100)*(1+(this.huixiao()-100)/100*(100-this.yuxiao())/100)*(1-0.1*this.shengyong)*(1-0.2*this.zhanlong)*(1-0.1*this.yijifuhuodian)*(1-0.2*this.erjifuhuodian)).toFixed(0);
-            
-            },
-            
+            huixinduopo()        { return critDamage.夺魄箭(this.ctx).toFixed(0); },
+            danyinzhui()         { return critDamage.单隐追(this.ctx).toFixed(0); },
+            shuangyinzhui()      { return critDamage.双隐追(this.ctx).toFixed(0); },
+            bailizhuihun()       { return critDamage.百里追魂(this.ctx).toFixed(0); },
+            huixinshoudafumo()   { return critDamage.手大附魔(this.ctx).toFixed(0); },
+            huixinxiedafumo()    { return critDamage.鞋大附魔(this.ctx).toFixed(0); },
+            huixinchengjiezhi()  { return critDamage.橙戒指(this.ctx).toFixed(0); },
         },
-        created() {//校验数据
-        //(this.lidao1-0)*(1+0.03*this.jingyuzhen) 
-            console.log("测试数据"+(this.lidao1-0)*(0.03*(this.jingyuzhen-0))*0.15)
-            console.log('40岁离异男大带一孩找一好女人入赘')
-        },
-
     }
 </script>
 
 <style scoped>
-.tangmen{
+.mingzun{
     background: url("../assets/backtangmen.png") no-repeat;
     flex: 1;
     background-size: 600px;
@@ -354,20 +267,8 @@
     background-attachment: fixed;
 }
 
-.el-row {
-    margin-bottom: 20px;
-    }
-.el-col {
-    border-radius: 4px;
-    }
-.grid-content {
-    border-radius: 4px;
-    min-height: 36px;
-    }
-.row-bg {
-    padding: 10px 0;
-    }
-/* .el-checkbox{
-    size:mini
-} */
-</style>    
+.el-row { margin-bottom: 20px; }
+.el-col { border-radius: 4px; }
+.grid-content { border-radius: 4px; min-height: 36px; }
+.row-bg { padding: 10px 0; }
+</style>

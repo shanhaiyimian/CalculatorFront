@@ -3,11 +3,11 @@
 		<table>
 			<ul class="ul">
                 <li>
-                    <router-link to="/mingjiao"><img src="../assets/mingjiao.png" width="20px" class="mingjiao">{{ job1 }}</router-link>
+                    <router-link to="/fenying"><img src="../assets/mingjiao.png" width="20px" class="fenying">{{ job1 }}</router-link>
                 </li>
-                <li>
-                    <router-link to="/tangmen"><img src="../assets/tangmen.png" width="20px" class="tangmen">{{ job2 }}</router-link>
-                </li>
+                <!-- <li>
+                    <router-link to="/mingzun"><img src="../assets/tangmen.png" width="20px" class="mingzun">{{ job2 }}</router-link>
+                </li> -->
                 <!-- <li>
                     <router-link to="/wanLingZong"><img src="" width="20px" class="wanLingZong">{{ job3 }}</router-link>
                 </li> -->
@@ -21,8 +21,7 @@ export default {
 	data() {
 		return {
 			job1: "焚影",
-			job2: "鲸鱼",
-			job3: "酒店",
+			job2: "明尊"
 		};
 	},
     methods: {
@@ -64,10 +63,10 @@ export default {
     color:#ff770f;
     font-weight: bolder;
 }
-.job .ul .mingjiao{
+.job .ul .fenying{
     vertical-align: middle;
 }
-.job .ul .tangmen{
+.job .ul .mingzun{
     vertical-align: middle;
 }
 .job .ul .wanLingZong{
