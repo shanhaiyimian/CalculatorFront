@@ -1,163 +1,260 @@
 <template>
     <div class="mingjiao">
-        <el-row :gutter="10" style="margin:0px">
-            <el-col :span="17" >
-                <div class="grid-content bg-purple">
-                    <div class="shuzhi">
-                        <h3>输入自身数值(0增益裸面板 默认为本赛季毕业属性)</h3>
-                        <div>
-                            元气数值：<input type="text" name="yuanqi" id="yuanqi" v-model="元气"  placeholder="请输入具体的元气数值" required>
-                            基础攻击：<input type="text" name="jichugongji" v-model="基础攻击" placeholder="请输入具体的基础攻击数值" required>
-                        </div>
-                        <div>
-                            会心数值：<input type="text" name="huixin" v-model="会心值" placeholder="请输入具体的会心数值" required>
-                            会效数值：<input type="text" name="huixiao" v-model="会效值" placeholder="请输入具体的会效数值" required>
-                            破防数值：<input type="text" name="pofang" v-model="破防值" placeholder="请输入具体的破防数值" required>
-                        </div>
-                        <h3>敌方数值</h3>
-                        <div>
-                            化劲数值：<input type="text" name="huajin" v-model="化劲" placeholder="请输入具体的化劲数值" required>
-                            御劲数值：<input type="text" name="yujin" v-model="御劲" placeholder="请输入具体的御劲数值" required>
-                            内防数值：<input type="text" name="neifang" v-model="内防值" placeholder="请输入具体的内防数值" required>
-                        </div>
-                        
+        <el-row :gutter="16" class="main-row" style="margin:0px">
+            <el-col :span="17">
+                <!-- 自身数值 -->
+                <el-card class="mj-card" shadow="hover">
+                    <div slot="header" class="mj-card-header">
+                        <span class="mj-title">自身数值</span>
+                        <span class="mj-hint">0增益裸面板 / 默认为本赛季毕业属性</span>
                     </div>
-                    <div class="zengjianyi">
-                        <h3>选择我方增益和奇穴</h3>
-                        <!-- <el-无间影狱-group v-model="无间影狱">
-                            <el-无间影狱 :label="1.1">无间影狱</el-无间影狱>
-                            <el-无间影狱 :label="1">无明业火</el-无间影狱>
-                        </el-无间影狱-group>
-                        <br>
-                        <el-无间影狱-group v-model="jingtitiandi">
-                            <el-无间影狱 :label="1">净体不畏</el-无间影狱>
-                            <el-无间影狱 :label="1.1" disabled>天地诛戮</el-无间影狱>
-                        </el-无间影狱-group> -->
-                        <div>
-                            <div>
-                                <!-- <el-checkbox v-model="mingguanghengzhao" label="明光恒照" size="mini" disabled border></el-checkbox>
-                                <el-checkbox v-model="xuanxiangzhuming" label="悬象著明" size="mini" disabled border></el-checkbox> -->
-                                <el-checkbox v-model="pvpShou" label="PVP手" size="mini" style="width: 96px"  border></el-checkbox>
-                                <el-checkbox v-model="jianFengBaiDuan" label="剑锋百锻" size="mini" border></el-checkbox>
-                                <el-checkbox v-model="yonghuierming" label="用晦而明" size="mini" border></el-checkbox>
-                                <el-checkbox v-model="judian" label="据点增益" size="mini" border></el-checkbox>
-                            </div>
-                            <div>
-                                <el-checkbox v-model="紫元气小药" label="紫元气药" size="mini" border></el-checkbox>
-                                <el-checkbox v-model="紫元气小吃" label="紫元气吃" size="mini" border></el-checkbox>
-                                <el-checkbox v-model="紫攻击小药" label="紫攻击药" size="mini" border></el-checkbox>
-                                <el-checkbox v-model="紫攻击小吃" label="紫攻击吃" size="mini" border></el-checkbox>
-                                <br>
-                                <el-checkbox v-model="紫武器附魔" label="紫武附魔" size="mini" border></el-checkbox>
-                                <el-checkbox v-model="紫元气酒" label="紫元气酒" size="mini" border></el-checkbox>
-                                <el-checkbox v-model="紫攻击创意" label="攻家园菜" size="mini" border></el-checkbox>
-                            </div>
-                            <div>
-                                <el-checkbox v-model="mingjiaozhen" label="明教阵眼" size="mini" border></el-checkbox>
-                                <el-checkbox v-model="texiaoyaozhui" label="特效腰椎" size="mini" border></el-checkbox>
-                                <el-checkbox v-model="chengwu" label="橙武特效" size="mini" border></el-checkbox>
-                            </div>
-                        </div>
-                        <h3>选择敌方减伤</h3>
+                    <el-form label-width="88px" size="small" label-position="right">
+                        <el-row :gutter="16">
+                            <el-col :span="12">
+                                <el-form-item label="元气数值">
+                                    <el-input-number v-model.number="元气" :min="0" :step="100" controls-position="right" style="width:100%"/>
+                                </el-form-item>
+                            </el-col>
+                            <el-col :span="12">
+                                <el-form-item label="基础攻击">
+                                    <el-input-number v-model.number="基础攻击" :min="0" :step="100" controls-position="right" style="width:100%"/>
+                                </el-form-item>
+                            </el-col>
+                            <el-col :span="8">
+                                <el-form-item label="会心数值">
+                                    <el-input-number v-model.number="会心值" :min="0" :step="100" controls-position="right" style="width:100%"/>
+                                </el-form-item>
+                            </el-col>
+                            <el-col :span="8">
+                                <el-form-item label="会效数值">
+                                    <el-input-number v-model.number="会效值" :min="0" :step="100" controls-position="right" style="width:100%"/>
+                                </el-form-item>
+                            </el-col>
+                            <el-col :span="8">
+                                <el-form-item label="破防数值">
+                                    <el-input-number v-model.number="破防值" :min="0" :step="100" controls-position="right" style="width:100%"/>
+                                </el-form-item>
+                            </el-col>
+                        </el-row>
+                    </el-form>
+                </el-card>
+
+                <!-- 敌方数值 -->
+                <el-card class="mj-card" shadow="hover">
+                    <div slot="header" class="mj-card-header">
+                        <span class="mj-title enemy">敌方数值</span>
+                    </div>
+                    <el-form label-width="88px" size="small" label-position="right">
+                        <el-row :gutter="16">
+                            <el-col :span="8">
+                                <el-form-item label="化劲数值">
+                                    <el-input-number v-model.number="化劲" :min="0" :step="100" controls-position="right" style="width:100%"/>
+                                </el-form-item>
+                            </el-col>
+                            <el-col :span="8">
+                                <el-form-item label="御劲数值">
+                                    <el-input-number v-model.number="御劲" :min="0" :step="100" controls-position="right" style="width:100%"/>
+                                </el-form-item>
+                            </el-col>
+                            <el-col :span="8">
+                                <el-form-item label="内防数值">
+                                    <el-input-number v-model.number="内防值" :min="0" :step="100" controls-position="right" style="width:100%"/>
+                                </el-form-item>
+                            </el-col>
+                        </el-row>
+                    </el-form>
+                </el-card>
+
+                <!-- 我方增益和奇穴 -->
+                <el-card class="mj-card" shadow="hover">
+                    <div slot="header" class="mj-card-header">
+                        <span class="mj-title">我方增益与奇穴</span>
+                    </div>
+                    <div class="buff-group">
+                        <div class="buff-group-title"><i class="el-icon-magic-stick"></i> 奇穴 / 秘籍</div>
+                        <el-checkbox v-model="pvpShou" label="PVP手" size="mini" border></el-checkbox>
+                        <el-checkbox v-model="jianFengBaiDuan" label="剑锋百锻" size="mini" border></el-checkbox>
+                        <el-checkbox v-model="yonghuierming" label="用晦而明" size="mini" border></el-checkbox>
+                        <el-checkbox v-model="judian" label="据点增益" size="mini" border></el-checkbox>
+                    </div>
+                    <el-divider class="mj-divider"></el-divider>
+                    <div class="buff-group">
+                        <div class="buff-group-title"><i class="el-icon-goblet-full"></i> 小吃小药 / 附魔</div>
+                        <el-checkbox v-model="紫元气小药" label="紫元气药" size="mini" border></el-checkbox>
+                        <el-checkbox v-model="紫元气小吃" label="紫元气吃" size="mini" border></el-checkbox>
+                        <el-checkbox v-model="紫攻击小药" label="紫攻击药" size="mini" border></el-checkbox>
+                        <el-checkbox v-model="紫攻击小吃" label="紫攻击吃" size="mini" border></el-checkbox>
+                        <el-checkbox v-model="紫武器附魔" label="紫武附魔" size="mini" border></el-checkbox>
+                        <el-checkbox v-model="紫元气酒" label="紫元气酒" size="mini" border></el-checkbox>
+                        <el-checkbox v-model="紫攻击创意" label="攻家园菜" size="mini" border></el-checkbox>
+                    </div>
+                    <el-divider class="mj-divider"></el-divider>
+                    <div class="buff-group">
+                        <div class="buff-group-title"><i class="el-icon-medal"></i> 装备 / 特效</div>
+                        <el-checkbox v-model="mingjiaozhen" label="明教阵眼" size="mini" border></el-checkbox>
+                        <el-checkbox v-model="texiaoyaozhui" label="特效腰椎" size="mini" border></el-checkbox>
+                        <el-checkbox v-model="chengwu" label="橙武特效" size="mini" border></el-checkbox>
+                    </div>
+                </el-card>
+
+                <!-- 敌方减伤 -->
+                <el-card class="mj-card" shadow="hover">
+                    <div slot="header" class="mj-card-header">
+                        <span class="mj-title enemy">敌方减伤</span>
+                    </div>
+                    <div class="buff-group">
                         <el-checkbox v-model="shengyong" label="圣咏" size="mini" border></el-checkbox>
                         <el-checkbox v-model="zhanlong" label="战龙" size="mini" border></el-checkbox>
                         <el-checkbox v-model="yijifuhuodian" label="10减伤复活点" size="mini" border></el-checkbox>
                         <el-checkbox v-model="erjifuhuodian" label="20减伤复活点" size="mini" border></el-checkbox>
                     </div>
+                </el-card>
+
+                <!-- 操作按钮 -->
+                <div class="mj-action-bar">
+                    <el-button type="primary" icon="el-icon-s-data" @click="jiNengDialog = true">技能伤害列表</el-button>
+                    <el-button type="warning" icon="el-icon-connection" @click="lianzhaoDialog = true">技能伤害序列</el-button>
                 </div>
-                <el-button type="primary" @click="jiNengDialog = true">技能伤害列表</el-button>
-                <el-button type="primary" @click="lianzhaoDialog = true">技能伤害序列</el-button>
+
+                <!-- 技能伤害列表 -->
                 <el-dialog
                     title="技能伤害列表"
                     :visible.sync="jiNengDialog"
-                    width="30%"
+                    width="58%"
+                    custom-class="mj-dialog"
                     center>
-                    不会心技能伤害 <hr>
-                    <!-- 崇光斩恶*3:<span>{{chongGuangZhanE3()}}</span><br> -->
-                    绕背驱夜:<span>{{buhuixinraobeiquye()}}</span><br>
-                    单体日破:<span>{{ripo()}}</span><br>
-                    单体超凡日破:<span>{{dantichaofanripo()}}</span><br>
-                    单体月破:<span>{{yuepo()}}</span><br>
-                    4跳日大:<span>{{rida()}}</span><br>
-                    <!-- rida3+吞100:<span></span><br> -->
-                    普通诛邪:<span>{{zhuxie()}}</span><br>
-                    超凡诛邪:<span>{{chaofanzhuxie()}}</span><br>
-                    <!-- 洞若观火:<span>{{dongRuoGuanHuo}}</span><br> -->
-                    <!-- 悬日斩:<span>还没做</span><br>
-                    悬日破:<span>还没做</span><br>
-                    悬月破:<span>还没做</span><br> -->
-                    3段日月晦总伤害:<span>{{sanduanriyuehui()}}</span><br>
-                    <!-- 手大附魔：<span>{{shoudafumo()}}</span><br>
-                    鞋大附魔：<span>{{xiedafumo()}}</span><br> -->
-                    橙戒指：<span>{{chengjiezhi()}}</span><br>
-                    橙武特效单次伤害：<span>{{chengwutexiao()}}</span>
-                    <br><br>
-                    技能会心伤害: <br><hr>
-                    绕背驱夜:<span>{{huixinraobeiquye()}}</span><br>
-                    单体日破:<span>{{huixinripo()}}</span><br>
-                    单体超凡日破:<span>{{huixindantichaofanripo()}}</span><br>
-                    单体月破:<span>{{huixinyuepo()}}</span><br>
-                    <!-- 4跳日大:<span>{{huixinrida()}}</span><br> -->
-                    <!-- rida3+吞100:<span></span><br> -->
-                    普通诛邪:<span>{{huixinzhuxie()}}</span><br>
-                    超凡诛邪:<span>{{huixinchaofanzhuxie()}}</span><br>
-                    <!-- 洞若观火:<span>还没做</span><br>
-                    悬日斩:<span>还没做</span><br>
-                    悬日破:<span>还没做</span><br>
-                    悬月破:<span>还没做</span><br> -->
-                    3段日月晦总伤害:<span>{{huixinsanduanriyuehui()}}</span><br>
-                    <!-- 手大附魔：<span>{{huixinshoudafumo()}}</span><br>
-                    鞋大附魔：<span>{{huixinxiedafumo()}}</span><br> -->
-                    橙戒指：<span>{{huixinchengjiezhi()}}</span><br>
-                    橙武特效单次伤害：<span>{{huixinchengwutexiao()}}</span>
-                    <span slot="footer" class="dialog-footer">
-                    </span>
+                    <el-table :data="damageTableData" stripe size="small" style="width:100%" :header-cell-style="{background:'#f5ede0',color:'#5a1a1a',fontWeight:'bold'}">
+                        <el-table-column prop="name" label="技能" min-width="140"/>
+                        <el-table-column label="不会心伤害" min-width="140" align="right">
+                            <template slot-scope="scope">
+                                <span class="dmg-normal">{{ scope.row.normal }}</span>
+                            </template>
+                        </el-table-column>
+                        <el-table-column label="会心伤害" min-width="140" align="right">
+                            <template slot-scope="scope">
+                                <span class="dmg-crit">{{ scope.row.crit }}</span>
+                            </template>
+                        </el-table-column>
+                    </el-table>
                 </el-dialog>
+
+                <!-- 技能伤害序列 -->
                 <el-dialog
                     title="技能伤害序列"
                     :visible.sync="lianzhaoDialog"
-                    width="70%"
+                    width="72%"
+                    custom-class="mj-dialog"
                     center>
-                    <div>
-                        <h4>技能选择</h4>
-                        <el-button type="primary" @click="pushJiNengXuLie('驱夜')">驱夜</el-button>
-                        <el-button type="primary" @click="pushJiNengXuLie('日大')">日大</el-button>
-                        <el-button type="primary" @click="pushJiNengXuLie('日破')">日破</el-button>
-                        <el-button type="primary" @click="pushJiNengXuLie('月破')">月破</el-button>
-                        <el-button type="primary" @click="pushJiNengXuLie('诛邪')">诛邪</el-button>
-                        <!-- <el-button type="primary" @click="pushJiNengXuLie('悬象')">悬象</el-button> -->
-                        <el-button type="primary" @click="pushJiNengXuLie('日斩')">日斩</el-button>
+                    <div class="seq-section">
+                        <div class="seq-section-title">技能选择</div>
+                        <el-button-group>
+                            <el-button type="primary" size="small" @click="pushJiNengXuLie('驱夜')">驱夜</el-button>
+                            <el-button type="primary" size="small" @click="pushJiNengXuLie('日大')">日大</el-button>
+                            <el-button type="primary" size="small" @click="pushJiNengXuLie('日破')">日破</el-button>
+                            <el-button type="primary" size="small" @click="pushJiNengXuLie('月破')">月破</el-button>
+                            <el-button type="primary" size="small" @click="pushJiNengXuLie('诛邪')">诛邪</el-button>
+                            <el-button type="primary" size="small" @click="pushJiNengXuLie('日斩')">日斩</el-button>
+                        </el-button-group>
                     </div>
-                    <div style="margin: 20px 0;">
-                        <h4>当前技能序列</h4>
-                        <div v-for="(d,index) in this.jiNengXuLie" :key="index" style="display: inline-block; margin: 5px;">
-                            <el-button size="mini" @click="jiNengXuLie.splice(index,1)">{{d}}</el-button>
+
+                    <div class="seq-section">
+                        <div class="seq-section-title">
+                            当前技能序列
+                            <el-button type="danger" size="mini" plain @click="clearJiNengXuLie" style="margin-left:12px;">清空序列</el-button>
                         </div>
-                        <el-button type="danger" size="small" @click="clearJiNengXuLie" style="margin-left: 20px;">清空序列</el-button>
+                        <div class="seq-list">
+                            <el-tag
+                                v-for="(d,index) in jiNengXuLie"
+                                :key="index"
+                                closable
+                                effect="dark"
+                                :type="tagType(d)"
+                                @close="jiNengXuLie.splice(index,1); updateChart();"
+                                class="seq-tag">
+                                {{ index + 1 }}. {{ d }}
+                            </el-tag>
+                            <span v-if="!jiNengXuLie.length" class="seq-empty">点击上方按钮添加技能</span>
+                        </div>
                     </div>
-                    <div style="margin: 20px 0;">
-                        <h4>伤害占比</h4>
-                        <div ref="chartRef" style="width: 600px;height:400px;"></div>
+
+                    <div class="seq-section" v-if="jiNengXuLie.length">
+                        <div class="seq-section-title">连招技能系数</div>
+                        <el-table
+                            :data="comboCoefData"
+                            size="small"
+                            border
+                            stripe
+                            show-summary
+                            :summary-method="coefSummary"
+                            :header-cell-style="{background:'#f5ede0',color:'#5a1a1a',fontWeight:'bold'}"
+                            style="width:100%">
+                            <el-table-column prop="name" label="技能" min-width="100"/>
+                            <el-table-column prop="count" label="次数" min-width="80" align="center"/>
+                            <el-table-column label="单次系数" min-width="120" align="right">
+                                <template slot-scope="scope">
+                                    <span class="coef-cell">{{ scope.row.coef.toFixed(4) }}</span>
+                                </template>
+                            </el-table-column>
+                            <el-table-column label="小计系数" min-width="120" align="right">
+                                <template slot-scope="scope">
+                                    <span class="coef-cell subtotal">{{ scope.row.subtotal.toFixed(4) }}</span>
+                                </template>
+                            </el-table-column>
+                            <el-table-column label="占比" min-width="100" align="right">
+                                <template slot-scope="scope">
+                                    <span class="coef-pct">{{ totalCoef ? (scope.row.subtotal / totalCoef * 100).toFixed(1) : 0 }}%</span>
+                                </template>
+                            </el-table-column>
+                        </el-table>
+                    </div>
+
+                    <div class="seq-section">
+                        <div class="seq-section-title">伤害占比对比</div>
+                        <el-row :gutter="16">
+                            <el-col :span="12">
+                                <div class="chart-wrap">
+                                    <div class="chart-title non-crit">全不会心 · 总伤害 <b>{{ totalNormal }}</b></div>
+                                    <div ref="chartRef" style="width:100%;height:380px;"></div>
+                                </div>
+                            </el-col>
+                            <el-col :span="12">
+                                <div class="chart-wrap">
+                                    <div class="chart-title crit">全会心 · 总伤害 <b>{{ totalCrit }}</b></div>
+                                    <div ref="chartCritRef" style="width:100%;height:380px;"></div>
+                                </div>
+                            </el-col>
+                        </el-row>
                     </div>
                 </el-dialog>
             </el-col>
+
+            <!-- 右侧面板 -->
             <el-col :span="7">
-                <div class="grid-content bg-purple">
-                    <div class="mianban">
-                        <h3>自身实际面板</h3>
-                        元气:<div class="面板攻击">{{yuanqi()}}</div>
-                        基础攻击:<div class="面板攻击">{{jichugongji()}}</div>
-                        面板攻击：<div class="面板攻击">{{面板攻击()}}</div>
-                        会心：<div class="mianbanhuixin">{{huixin()}}%</div>
-                        会效：<div class="mianbanhuixiao" min="175" max="300">{{huixiao()}}%</div>
-                        破防：<div class="mianbanpofang">{{pofang()}}%</div>
-                        <h3>敌方防御面板</h3>   
-                        内防：<div class="mianbanneifang">{{neifang()}}%</div>
-                        化劲：<div class="mianbanhuajin">{{huajin()}}%</div>
-                        御劲：<div class="mianbanyujin">{{yujin()}}%</div>
-                        御效：<div class="mianbanyuxiao">{{yuxiao()}}%</div>
+                <el-card class="mj-card panel-card" shadow="hover">
+                    <div slot="header" class="mj-card-header">
+                        <span class="mj-title"><i class="el-icon-user-solid"></i> 自身实际面板</span>
                     </div>
-                </div>
+                    <div class="stat-grid">
+                        <div class="stat-row"><span class="stat-label">元气</span><span class="stat-value">{{yuanqi()}}</span></div>
+                        <div class="stat-row"><span class="stat-label">基础攻击</span><span class="stat-value">{{jichugongji()}}</span></div>
+                        <div class="stat-row highlight"><span class="stat-label">面板攻击</span><span class="stat-value attack">{{面板攻击()}}</span></div>
+                        <div class="stat-row"><span class="stat-label">会心</span><span class="stat-value crit">{{huixin()}}<em>%</em></span></div>
+                        <div class="stat-row"><span class="stat-label">会效</span><span class="stat-value crit-eff">{{huixiao()}}<em>%</em></span></div>
+                        <div class="stat-row"><span class="stat-label">破防</span><span class="stat-value pofang">{{pofang()}}<em>%</em></span></div>
+                    </div>
+                </el-card>
+
+                <el-card class="mj-card panel-card enemy-panel" shadow="hover">
+                    <div slot="header" class="mj-card-header">
+                        <span class="mj-title enemy"><i class="el-icon-s-flag"></i> 敌方防御面板</span>
+                    </div>
+                    <div class="stat-grid">
+                        <div class="stat-row"><span class="stat-label">内防</span><span class="stat-value neifang">{{neifang()}}<em>%</em></span></div>
+                        <div class="stat-row"><span class="stat-label">化劲</span><span class="stat-value huajin">{{huajin()}}<em>%</em></span></div>
+                        <div class="stat-row"><span class="stat-label">御劲</span><span class="stat-value yujin">{{yujin()}}<em>%</em></span></div>
+                        <div class="stat-row"><span class="stat-label">御效</span><span class="stat-value yuxiao">{{yuxiao()}}<em>%</em></span></div>
+                    </div>
+                </el-card>
             </el-col>
         </el-row>
     </div>
@@ -171,6 +268,9 @@
                 //技能序列
                 jiNengXuLie:[],
                 chart: null,
+                chartCrit: null,
+                totalNormal: 0,
+                totalCrit: 0,
                 无间影狱:1.1,
                 //我方面板模块
                 元气:11691,
@@ -184,9 +284,9 @@
                 内防值:16830,
                 //-------------------------------------技能系数模块--万灵当歌版本-----------------------------------------------
                 //绕背驱夜断愁 260*1.1*1.05 * 1.05*1.05  lv29
-                驱夜断愁:1.2604*1.3*1.6*3/**3.14技改 */,//已计算绕背 
+                驱夜断愁:1.2604*1.3*1.6*3/**3.14技改 */,//已计算绕背
                 //诛邪镇魔×2  225*1.05*1.1 * 1.1  lv32
-                诛邪镇魔:1.7083*2,//已计算伤害×2  
+                诛邪镇魔:1.7083*2,//已计算伤害×2
                 //赤日轮1 77 * 1.2 * 1.1*1.1*1.1 * 1.05*1.3lv33
                 赤日轮1:0.8697,
                 //赤日轮2 77 * 1.2 * 1.1*1.1*1.1 * 1.05* 1.3lv33
@@ -203,38 +303,29 @@
                 月破:0.8385*3,
                 //日破 单体  180*1.15*1.1*1.1*1.1*1.05*1.1*1.1*1.15  lv32
                 日破:2.5156,
-                            //日破 8目标  83 * 1.15*1.1*1.1*1.1*1.05*1.1*1.1*1.15  lv32
-                            // riPo8XiShu:0.9635,
-                            //月大 360 * 1.89
-                            // yueDaXiShu:3.54375,
-                        //日大 200 单次 最终得*4 满灵结算为 310 * 0.1 * dwSkillLevel  日大系数目前展示为4+吞满日
-                        riDaXiShu:5.78125,
+                //日大 200 单次 最终得*4 满灵结算为 310 * 0.1 * dwSkillLevel  日大系数目前展示为4+吞满日
+                riDaXiShu:5.78125,
                 //日月晦 一段 300 * 0.9 * 0.9  二段300 * 0.9 * 0.9  三段 300 * 0.9 * 0.9 *2
                 日月晦:5.0625,
-                //日劫 64 * 1.05  
-                生死劫日:0.35, 
+                //日劫 64 * 1.05
+                生死劫日:0.35,
                 //月劫 64 * 1.05
                 生死劫月:0.35,
                 //烈日斩  141 * 1.1*1.1*1.05 * 1.05*1.3  lv32
                 烈日斩:1.2708,
                 //银月斩  (40 + (dwSkillLevel - 9) * 4) 76* 1.1 * 1.1*1.1*1.05 * 1.05*1.3  lv18
                 银月斩:0.7500,
-                //银月斩Dot每跳 
+                //银月斩Dot每跳
                 银月斩Dot:0.16,
                 //50 * 1.1 * 1.2 * 1.8  LV1
                 //动若观火
                 洞若观火:0.2604,
-                //弥业报劫系数 
 
                 //-----------------净体不畏层级
                 jingTiBuWeriRiLV1:0.61875,//斩系列 净体触发系数
-                //50 * 1.1 * 1.2 * 1.8 * 0.5 * 1.5
                 jingTiBuWeriRiLV2:0.4640625,//轮系列 净体触发系数
-                //50 * 1.1 * 1.2 * 1.8 * 1.5*1.1
                 jingTiBuWeriRiLV3:1.0209375,//破 影子 系列 净体触发系数
-                //50 * 1.1 * 1.2 * 1.8 * 1.5 * 0.1
                 jingTiBuWeriRiLV4:0.0928125,//诛邪系列 净体触发系数
-                //50 * 1.1 * 1.2 * 1.8 * 1.5 * 0.1
                 jingTiBuWeriRiLV5:0.0928125,//生死劫系列 净体触发系数
 
                 chongGuangZhanE:37.038744,
@@ -266,7 +357,76 @@
                 lianzhaoDialog: false, //连招序列框
             };
         },
+        computed: {
+            //连招技能系数聚合（按技能归并，累计次数与小计系数）
+            comboCoefData() {
+                const mishu = 1 + 0.12;                     // 秘籍加成
+                const cw = 0.05 * (this.chengwu ? 1 : 0);   // 橙武加成
+                const coefOf = (skill) => {
+                    switch(skill) {
+                        case '驱夜': return (mishu + cw) * this.驱夜断愁;
+                        case '日大': return 4.1668;
+                        case '日破': return (mishu + cw) * 3.327335615780859;
+                        case '月破': return (mishu + cw) * 0.5525 * 3;
+                        case '诛邪': return (mishu + cw) * 2.707089;
+                        case '日斩': return 1 * 1.25 * 1.25 * 2 * (1 + 0.22) * 1.18540627734375;
+                        default: return 0;
+                    }
+                };
+                const map = {};
+                this.jiNengXuLie.forEach(skill => {
+                    if (!map[skill]) {
+                        map[skill] = { name: skill, count: 0, coef: coefOf(skill), subtotal: 0 };
+                    }
+                    map[skill].count += 1;
+                    map[skill].subtotal += map[skill].coef;
+                });
+                return Object.values(map);
+            },
+            totalCoef() {
+                return this.comboCoefData.reduce((s, r) => s + r.subtotal, 0);
+            },
+            totalCount() {
+                return this.comboCoefData.reduce((s, r) => s + r.count, 0);
+            },
+            damageTableData() {
+                return [
+                    { name: '绕背驱夜', normal: this.buhuixinraobeiquye(), crit: this.huixinraobeiquye() },
+                    { name: '单体日破', normal: this.ripo(), crit: this.huixinripo() },
+                    { name: '单体超凡日破', normal: this.dantichaofanripo(), crit: this.huixindantichaofanripo() },
+                    { name: '单体月破', normal: this.yuepo(), crit: this.huixinyuepo() },
+                    { name: '4跳日大', normal: this.rida(), crit: '—' },
+                    { name: '普通诛邪', normal: this.zhuxie(), crit: this.huixinzhuxie() },
+                    { name: '超凡诛邪', normal: this.chaofanzhuxie(), crit: this.huixinchaofanzhuxie() },
+                    { name: '3段日月晦总伤害', normal: this.sanduanriyuehui(), crit: this.huixinsanduanriyuehui() },
+                    { name: '橙戒指', normal: this.chengjiezhi(), crit: this.huixinchengjiezhi() },
+                    { name: '橙武特效单次伤害', normal: this.chengwutexiao(), crit: this.huixinchengwutexiao() },
+                ];
+            }
+        },
         methods: {
+            //技能系数表合计行
+            coefSummary() {
+                return [
+                    '合计',
+                    this.totalCount,
+                    '—',
+                    this.totalCoef.toFixed(4),
+                    '100%',
+                ];
+            },
+            //根据技能名返回 tag 颜色
+            tagType(skill) {
+                const map = {
+                    '驱夜': 'danger',
+                    '日大': 'warning',
+                    '日破': 'danger',
+                    '月破': 'info',
+                    '诛邪': 'success',
+                    '日斩': 'warning',
+                };
+                return map[skill] || '';
+            },
             //面板元气的计算函数
             yuanqi(){
                 return ((this.元气-0)+this.紫元气小吃*284+this.紫元气小药*365+this.紫元气酒*208).toFixed(0)
@@ -288,11 +448,10 @@
                 if((((((this.会心值-0)+(this.紫元气小吃*284+this.紫元气小药*365+this.紫元气酒*208)*0.29)/197703.0-0)*100)+((this.无间影狱===1?1:0)*10)+13*this.mingjiaozhen).toFixed(2)
                 >100){
                     return 100
-                }else{ 
+                }else{
                 return (((((this.会心值-0)+(this.紫元气小吃*284+
                 this.紫元气小药*365+this.紫元气酒*208)*0.29)/197703.0-0)*100)+((this.无间影狱===1?1:0)*10)+13*this.mingjiaozhen).toFixed(2)
                 }
-                // 会心% (130级) ≈ 最终会心等级 / 197703.0
             },
             //面板会效的计算函数
             huixiao(){
@@ -301,12 +460,10 @@
                 }else{
                     return ((this.会效值/72844.2)*100+175+((this.无间影狱===1?1:0)*5)+20*this.mingjiaozhen).toFixed(2)
                 }
-                // 会心效果% (130级) ≈ 最终会心效果等级 / 72844.2 + 1.75
             },
             //面板破防的计算函数
             pofang(){
                 return ((((this.破防值-0)+36472*this.texiaoyaozhui+0.3*(this.紫元气小吃*284+this.紫元气小药*365+this.紫元气酒*208))/225957.6)*100).toFixed(2)
-                // 破防% (130级) ≈ 最终破防等级 / 225957.6
             },
             //面板内防的计算函数
             neifang(){
@@ -317,7 +474,6 @@
                     return ((this.内防值*(1-0.55*this.yonghuierming))/
                     (this.内防值*(1-0.55*this.yonghuierming)+126007.2)*100).toFixed(2)
                 }
-                // 防御% (130级) ≈ 最终防御等级 / ( 最终防御等级 + 126007.2 )
             },
             //面板化劲的计算函数
             huajin(){
@@ -329,7 +485,6 @@
                 }else{
                     return (((this.化劲-0-2756*this.pvpShou)/((this.化劲-0-2756*this.pvpShou)+33046.2)*100+9.9609375)).toFixed(2)
                 }
-                // 化劲% (130级) ≈ 最终化劲等级 / ( 最终化劲等级 + 33046.2 ) + 0.099609375
             },
             //面板御劲的计算函数
             yujin(){
@@ -341,7 +496,6 @@
                 }else{
                     return ((this.御劲/197703.0*100)-0).toFixed(2)
                 }
-                // 御劲% (130级) ≈ 最终御劲等级 / 197703.0
             },
             //面板御效的计算函数
             yuxiao(){
@@ -350,124 +504,98 @@
                 }else{
                     return (this.御劲/55123.2*100).toFixed(2)
                 }
-                // 御劲会效% (130级) ≈ 最终御劲会效等级 / 55123.2
             },
             //技能伤害列表中的 不会心绕背驱夜
-            buhuixinraobeiquye(){   
+            buhuixinraobeiquye(){
                 return (1*(1+0.12+0.05*this.chengwu)*this.驱夜断愁*this.面板攻击()*((this.pofang()-0)+100)/100*this.无间影狱
                 *(1-this.neifang()/100)*(1-this.huajin()/100) *(1-0.1*this.shengyong)*(1-0.2*this.zhanlong)*(1-0.1*this.yijifuhuodian)*(1-0.2*this.erjifuhuodian)).toFixed(0)
             },
-            //技能伤害列表中的 单体超凡日破
             dantichaofanripo(){
                 return (1*(1+0.12+0.2+0.05*this.chengwu)*3.327335615780859*this.面板攻击()*((this.pofang()-0)+100)/100*this.无间影狱
                 *(1-this.neifang()/100)*(1-this.huajin()/100) *(1-0.1*this.shengyong)*(1-0.2*this.zhanlong)*(1-0.1*this.yijifuhuodian)*(1-0.2*this.erjifuhuodian)).toFixed(0)
             },
-            //技能伤害列表中的 日破
             ripo(){
                 return (1*(1+0.12+0.05*this.chengwu)*3.327335615780859*this.面板攻击()*((this.pofang()-0)+100)/100*this.无间影狱
                 *(1-this.neifang()/100)*(1-this.huajin()/100) *(1-0.1*this.shengyong)*(1-0.2*this.zhanlong)*(1-0.1*this.yijifuhuodian)*(1-0.2*this.erjifuhuodian)).toFixed(0)
             },
-            //技能伤害列表中的 月破
             yuepo(){
                 return (1*(1+0.12+0.05*this.chengwu)*0.5525*3*this.面板攻击()*((this.pofang()-0)+100)/100*this.无间影狱
                 *(1-this.neifang()/100)*(1-this.huajin()/100) *(1-0.1*this.shengyong)*(1-0.2*this.zhanlong)*(1-0.1*this.yijifuhuodian)*(1-0.2*this.erjifuhuodian)).toFixed(0)
             },
-            //技能伤害列表中的 rida
             rida(){
                 return ((4.1668*this.面板攻击()*((this.pofang()-0)+100)/100)*this.无间影狱
                 *(1-this.neifang()/100)*(1-this.huajin()/100) *(1-0.1*this.shengyong)*(1-0.2*this.zhanlong)*(1-0.1*this.yijifuhuodian)*(1-0.2*this.erjifuhuodian)).toFixed(0)
             },
-            //技能伤害列表中的 诛邪
             zhuxie(){
                 return (1*(1+0.12+0.05*this.chengwu)*2.707089*this.面板攻击()*((this.pofang()-0)+100)/100*this.无间影狱
                 *(1-this.neifang()/100)*(1-this.huajin()/100) *(1-0.1*this.shengyong)*(1-0.2*this.zhanlong)*(1-0.1*this.yijifuhuodian)*(1-0.2*this.erjifuhuodian)).toFixed(0)
             },
-            //技能伤害列表中的 超凡诛邪
             chaofanzhuxie(){
                 return (1*(1+0.12/**秘籍*/+0.2+0.05*this.chengwu)*2.707089*this.面板攻击()*((this.pofang()-0)+100)/100*this.无间影狱
                 *(1-this.neifang()/100)*(1-this.huajin()/100) *(1-0.1*this.shengyong)*(1-0.2*this.zhanlong)*(1-0.1*this.yijifuhuodian)*(1-0.2*this.erjifuhuodian)).toFixed(0)
             },
-            //技能伤害列表中的 三段日月晦
             sanduanriyuehui(){
                 return ((1.265625*4*this.面板攻击()*((this.pofang()-0)+100)/100)*this.无间影狱
                 *(1-this.neifang()/100)*(1-this.huajin()/100) *(1-0.1*this.shengyong)*(1-0.2*this.zhanlong)*(1-0.1*this.yijifuhuodian)*(1-0.2*this.erjifuhuodian)).toFixed(0)
             },
-                //  1.265625*4
-            //技能伤害列表中的 手附魔
             shoudafumo(){
                 return ((0.46875*this.面板攻击()*((this.pofang()-0)+100)/100)*this.无间影狱
                 *(1-this.neifang()/100)*(1-this.huajin()/100) *(1-0.1*this.shengyong)*(1-0.2*this.zhanlong)*(1-0.1*this.yijifuhuodian)*(1-0.2*this.erjifuhuodian)).toFixed(0)
             },
-            //技能伤害列表中的 鞋附魔
             xiedafumo(){
                 return ((0.52084*this.面板攻击()*((this.pofang()-0)+100)/100)*this.无间影狱
                 *(1-this.neifang()/100)*(1-this.huajin()/100) *(1-0.1*this.shengyong)*(1-0.2*this.zhanlong)*(1-0.1*this.yijifuhuodian)*(1-0.2*this.erjifuhuodian)).toFixed(0)
             },
-            //技能伤害列表中的 橙戒指
             chengjiezhi(){
                 return 11250
-                // 0.5208333333333333 通道100 郭 内为192
             },
-            //技能伤害列表中的 橙武特效
             chengwutexiao(){
                 return ((2*this.面板攻击()*((this.pofang()-0)+100)/100)*this.无间影狱
                 *(1-this.neifang()/100)*(1-this.huajin()/100) *(1-0.1*this.shengyong)*(1-0.2*this.zhanlong)*(1-0.1*this.yijifuhuodian)*(1-0.2*this.erjifuhuodian)).toFixed(0)
             },
-            //技能伤害列表中的 会心绕背驱夜
             huixinraobeiquye(){
                 return (1*(1+0.12+0.05*this.chengwu)*this.驱夜断愁*this.面板攻击()*((this.pofang()-0)+100)/100*this.无间影狱
                 *(1-this.neifang()/100)*(1-this.huajin()/100)*(1+(this.huixiao()-100)/100*(100-this.yuxiao())/100)*(1-0.1*this.shengyong)*(1-0.2*this.zhanlong)*(1-0.1*this.yijifuhuodian)*(1-0.2*this.erjifuhuodian)).toFixed(0)
             },
-            //技能伤害列表中的 会心日破
             huixinripo(){
                 return (1*(1+0.12+0.05*this.chengwu)*1.6574*this.面板攻击()*((this.pofang()-0)+100)/100*this.无间影狱
                 *(1-this.neifang()/100)*(1-this.huajin()/100)*(1+(this.huixiao()-100)/100*(100-this.yuxiao())/100)*(1-0.1*this.shengyong)*(1-0.2*this.zhanlong)*(1-0.1*this.yijifuhuodian)*(1-0.2*this.erjifuhuodian)).toFixed(0)
             },
-            //技能伤害列表中的 会心超凡日破
             huixindantichaofanripo(){
                 return (1*(1+0.12+0.2+0.05*this.chengwu)*1.6574*this.面板攻击()*((this.pofang()-0)+100)/100*this.无间影狱
                 *(1-this.neifang()/100)*(1-this.huajin()/100)*(1+(this.huixiao()-100)/100*(100-this.yuxiao())/100)*(1-0.1*this.shengyong)*(1-0.2*this.zhanlong)*(1-0.1*this.yijifuhuodian)*(1-0.2*this.erjifuhuodian)).toFixed(0)
             },
-            //技能伤害列表中的 会心月破
             huixinyuepo(){
                 return (1*(1+0.12+0.05*this.chengwu)*0.5525*3*this.面板攻击()*((this.pofang()-0)+100)/100*this.无间影狱
                 *(1-this.neifang()/100)*(1-this.huajin()/100)*(1+(this.huixiao()-100)/100*(100-this.yuxiao())/100)*(1-0.1*this.shengyong)*(1-0.2*this.zhanlong)*(1-0.1*this.yijifuhuodian)*(1-0.2*this.erjifuhuodian)).toFixed(0)
             },
-            //技能伤害列表中的 会心rida
             huixinrida(){
                 return ((4.1668*this.面板攻击()*((this.pofang()-0)+100)/100)*this.无间影狱
                 *(1-this.neifang()/100)*(1-this.huajin()/100)*(1+(this.huixiao()-100)/100*(100-this.yuxiao())/100)*(1-0.1*this.shengyong)*(1-0.2*this.zhanlong)*(1-0.1*this.yijifuhuodian)*(1-0.2*this.erjifuhuodian)).toFixed(0)
             },
-            //技能伤害列表中的 会心诛邪
             huixinzhuxie(){
                 return (1*(1+0.12+0.05*this.chengwu)*2.707089*this.面板攻击()*((this.pofang()-0)+100)/100*this.无间影狱
                 *(1-this.neifang()/100)*(1-this.huajin()/100)*(1+(this.huixiao()-100)/100*(100-this.yuxiao())/100)*(1-0.1*this.shengyong)*(1-0.2*this.zhanlong)*(1-0.1*this.yijifuhuodian)*(1-0.2*this.erjifuhuodian)).toFixed(0)
             },
-            //技能伤害列表中的 会心超凡诛邪
             huixinchaofanzhuxie(){
                 return (1*(1+0.12+0.2+0.05*this.chengwu)*2.707089*this.面板攻击()*((this.pofang()-0)+100)/100*this.无间影狱
                 *(1-this.neifang()/100)*(1-this.huajin()/100)*(1+(this.huixiao()-100)/100*(100-this.yuxiao())/100)*(1-0.1*this.shengyong)*(1-0.2*this.zhanlong)*(1-0.1*this.yijifuhuodian)*(1-0.2*this.erjifuhuodian)).toFixed(0)
             },
-           //技能伤害列表中的 会心三段日月晦
             huixinsanduanriyuehui(){
                 return ((1.265625*4*this.面板攻击()*((this.pofang()-0)+100)/100)*this.无间影狱
                 *(1-this.neifang()/100)*(1-this.huajin()/100)*(1+(this.huixiao()-100)/100*(100-this.yuxiao())/100)*(1-0.1*this.shengyong)*(1-0.2*this.zhanlong)*(1-0.1*this.yijifuhuodian)*(1-0.2*this.erjifuhuodian)).toFixed(0)
             },
-            //技能伤害列表中的 会心手附魔
             huixinshoudafumo(){
                 return ((0.46875*this.面板攻击()*((this.pofang()-0)+100)/100)*this.无间影狱
                 *(1-this.neifang()/100)*(1-this.huajin()/100)*(1+(this.huixiao()-100)/100*(100-this.yuxiao())/100)*(1-0.1*this.shengyong)*(1-0.2*this.zhanlong)*(1-0.1*this.yijifuhuodian)*(1-0.2*this.erjifuhuodian)).toFixed(0)
             },
-            //技能伤害列表中的 会心鞋附魔
             huixinxiedafumo(){
                 return ((0.52084*this.面板攻击()*((this.pofang()-0)+100)/100)*this.无间影狱
                 *(1-this.neifang()/100)*(1-this.huajin()/100)*(1+(this.huixiao()-100)/100*(100-this.yuxiao())/100)*(1-0.1*this.shengyong)*(1-0.2*this.zhanlong)*(1-0.1*this.yijifuhuodian)*(1-0.2*this.erjifuhuodian)).toFixed(0)
             },
-            //技能伤害列表中的 会心橙戒指
             huixinchengjiezhi(){
                 return 11250
             },
-            //技能伤害列表中的 会心橙武特效
             huixinchengwutexiao(){
                 return ((2*this.面板攻击()*((this.pofang()-0)+100)/100)*this.无间影狱
                 *(1-this.neifang()/100)*(1-this.huajin()/100)*(1+(this.huixiao()-100)/100*(100-this.yuxiao())/100)*(1-0.1*this.shengyong)*(1-0.2*this.zhanlong)*(1-0.1*this.yijifuhuodian)*(1-0.2*this.erjifuhuodian)).toFixed(0)
@@ -480,52 +608,61 @@
                 return ((1*1.25*1.25*(1+0.22)*1.18540627734375+1.18540627734375)*this.面板攻击()*((this.pofang()-0)+100)/100*this.无间影狱
                 *(1-this.neifang()/100)*(1-this.huajin()/100)*(1+(this.huixiao()-100)/100*(100-this.yuxiao())/100)*(1-0.1*this.shengyong)*(1-0.2*this.zhanlong)*(1-0.1*this.yijifuhuodian)*(1-0.2*this.erjifuhuodian)).toFixed(0)
             },
-            huiXinDongRuoGuanHuo(){
-                
-            },
             pushJiNengXuLie(x){
                 this.jiNengXuLie.push(x)
-                console.log('打印集合'+this.jiNengXuLie);
                 this.updateChart();
             },
             clearJiNengXuLie(){
                 this.jiNengXuLie = [];
                 this.updateChart();
             },
-            // 获取技能伤害值
             getSkillDamage(skill) {
                 switch(skill) {
-                    case '驱夜':
-                        return parseInt(this.buhuixinraobeiquye());
-                    case '日大':
-                        return parseInt(this.rida());
-                    case '日破':
-                        return parseInt(this.ripo());
-                    case '月破':
-                        return parseInt(this.yuepo());
-                    case '诛邪':
-                        return parseInt(this.zhuxie());
-                    case '日斩':
-                        return parseInt(this.xinbanbenrizhan());
-                    default:
-                        return 0;
+                    case '驱夜': return parseInt(this.buhuixinraobeiquye());
+                    case '日大': return parseInt(this.rida());
+                    case '日破': return parseInt(this.ripo());
+                    case '月破': return parseInt(this.yuepo());
+                    case '诛邪': return parseInt(this.zhuxie());
+                    case '日斩': return parseInt(this.xinbanbenrizhan());
+                    default: return 0;
                 }
             },
-            // 更新图表
-            updateChart() {
-                if (!this.chart) {
-                    this.initChart();
+            getSkillDamageCrit(skill) {
+                switch(skill) {
+                    case '驱夜': return parseInt(this.huixinraobeiquye());
+                    case '日大': return parseInt(this.huixinrida());
+                    case '日破': return parseInt(this.huixinripo());
+                    case '月破': return parseInt(this.huixinyuepo());
+                    case '诛邪': return parseInt(this.huixinzhuxie());
+                    case '日斩': return parseInt(this.huixinxinbanbenrizhan());
+                    default: return 0;
                 }
-                
+            },
+            buildPieOption(title, damageData, colors) {
+                return {
+                    title: { text: title, left: 'center', textStyle: { color:'#5a1a1a', fontSize:14 } },
+                    tooltip: { trigger: 'item', formatter: '{a}<br/>{b}: {c} ({d}%)' },
+                    legend: { orient: 'horizontal', bottom: 0, data: damageData.map(item => item.name) },
+                    color: colors,
+                    series: [{
+                        name: '伤害占比',
+                        type: 'pie',
+                        radius: ['40%','62%'],
+                        center: ['50%', '50%'],
+                        avoidLabelOverlap: true,
+                        itemStyle: { borderRadius: 6, borderColor: '#fff', borderWidth: 2 },
+                        label: { formatter: '{b}\n{d}%' },
+                        data: damageData,
+                        emphasis: { itemStyle: { shadowBlur: 10, shadowOffsetX: 0, shadowColor: 'rgba(0,0,0,0.3)' } }
+                    }]
+                };
+            },
+            aggregate(dataGetter) {
                 const damageData = [];
-                let totalDamage = 0;
-                
-                // 计算每个技能的伤害
+                let total = 0;
                 this.jiNengXuLie.forEach(skill => {
-                    const damage = this.getSkillDamage(skill);
-                    totalDamage += damage;
-                    
-                    // 查找是否已有该技能的记录
+                    const damage = dataGetter(skill);
+                    total += damage;
                     const existing = damageData.find(item => item.name === skill);
                     if (existing) {
                         existing.value += damage;
@@ -533,49 +670,39 @@
                         damageData.push({name: skill, value: damage});
                     }
                 });
-                
-                // 更新图表数据
-                this.chart.setOption({
-                    title: {
-                        text: '技能伤害占比',
-                        left: 'center'
-                    },
-                    tooltip: {
-                        trigger: 'item',
-                        formatter: '{a} <br/>{b}: {c} ({d}%)'
-                    },
-                    legend: {
-                        orient: 'vertical',
-                        left: 'left',
-                        data: damageData.map(item => item.name)
-                    },
-                    series: [
-                        {
-                            name: '伤害占比',
-                            type: 'pie',
-                            radius: '55%',
-                            center: ['50%', '60%'],
-                            data: damageData,
-                            emphasis: {
-                                itemStyle: {
-                                    shadowBlur: 10,
-                                    shadowOffsetX: 0,
-                                    shadowColor: 'rgba(0, 0, 0, 0.5)'
-                                }
-                            }
-                        }
-                    ]
-                });
+                return { damageData, total };
             },
-            // 初始化图表
+            updateChart() {
+                if (!this.chart || !this.chartCrit) {
+                    this.initChart();
+                    return;
+                }
+                const normal = this.aggregate(this.getSkillDamage);
+                const crit = this.aggregate(this.getSkillDamageCrit);
+                this.totalNormal = normal.total;
+                this.totalCrit = crit.total;
+                this.chart.setOption(
+                    this.buildPieOption('全不会心伤害占比', normal.damageData,
+                        ['#7f8c8d', '#95a5a6', '#bdc3c7', '#34495e', '#5d6d7e', '#85929e']),
+                    true
+                );
+                this.chartCrit.setOption(
+                    this.buildPieOption('全会心伤害占比', crit.damageData,
+                        ['#a01c1c', '#d4a017', '#e67e22', '#5f3a8f', '#c0392b', '#2c7a7b']),
+                    true
+                );
+            },
             initChart() {
-                this.chart = echarts.init(this.$refs.chartRef);
+                if (this.$refs.chartRef) {
+                    this.chart = echarts.init(this.$refs.chartRef);
+                }
+                if (this.$refs.chartCritRef) {
+                    this.chartCrit = echarts.init(this.$refs.chartCritRef);
+                }
                 this.updateChart();
             },
         },
-        created() {//校验数据
-            // this.pushJiNengXuLie()
-        },
+        created() {},
         watch: {
             lianzhaoDialog(newVal) {
                 if (newVal) {
@@ -586,16 +713,9 @@
             }
         },
         beforeDestroy() {
-            if (this.chart) {
-                this.chart.dispose();
-            }
+            if (this.chart) this.chart.dispose();
+            if (this.chartCrit) this.chartCrit.dispose();
         },
-        computed:{
-            // test驱夜断愁(){
-            //     return (this.Test驱夜断愁DManage-0)/192
-            // }
-        },
-
     }
 </script>
 
@@ -607,22 +727,219 @@
     background-position-x: center;
     background-position-y: center;
     background-attachment: fixed;
+    padding: 16px;
+    min-height: 100vh;
 }
 
-.el-row {
-    margin-bottom: 20px;
-    }
-.el-col {
-    border-radius: 4px;
-    }
-.grid-content {
-    border-radius: 4px;
-    min-height: 36px;
-    }
-.row-bg {
-    padding: 10px 0;
-    }
-/* .el-checkbox{
-    size:mini
-} */
-</style>    
+.main-row { margin-bottom: 20px; }
+
+/* 卡片整体风格 —— 半透明白底 + 红金点缀 */
+.mj-card {
+    margin-bottom: 14px;
+    border: 1px solid rgba(160, 28, 28, 0.15);
+    border-radius: 10px;
+    background: rgba(255, 252, 248, 0.92);
+    backdrop-filter: blur(3px);
+    transition: box-shadow .25s, transform .25s;
+}
+.mj-card:hover { transform: translateY(-1px); }
+
+.mj-card >>> .el-card__header {
+    padding: 12px 18px;
+    background: linear-gradient(90deg, rgba(160,28,28,0.08) 0%, rgba(212,160,23,0.05) 100%);
+    border-bottom: 1px solid rgba(160, 28, 28, 0.15);
+    border-radius: 10px 10px 0 0;
+}
+.mj-card >>> .el-card__body { padding: 16px 18px; }
+
+.mj-card-header {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+}
+.mj-title {
+    font-size: 16px;
+    font-weight: 700;
+    color: #8B0000;
+    letter-spacing: 1px;
+    position: relative;
+    padding-left: 12px;
+}
+.mj-title::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 4px;
+    width: 4px; height: 16px;
+    background: linear-gradient(180deg, #a01c1c, #d4a017);
+    border-radius: 2px;
+}
+.mj-title.enemy { color: #4a4a4a; }
+.mj-title.enemy::before { background: linear-gradient(180deg, #4a4a4a, #8a8a8a); }
+.mj-hint { font-size: 12px; color: #999; }
+
+/* 增益分组 */
+.buff-group { line-height: 2.2; }
+.buff-group-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: #8B0000;
+    margin-bottom: 8px;
+}
+.buff-group-title i { margin-right: 4px; }
+.buff-group .el-checkbox { margin: 4px 6px 4px 0 !important; }
+
+.mj-divider { margin: 12px 0 !important; }
+
+/* 操作按钮条 */
+.mj-action-bar {
+    display: flex;
+    gap: 12px;
+    margin: 6px 0 0;
+}
+.mj-action-bar .el-button {
+    padding: 10px 22px;
+    font-size: 14px;
+    font-weight: 600;
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+}
+
+/* 右侧面板 */
+.panel-card .el-card__body { padding: 14px 18px; }
+.stat-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+.stat-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 12px;
+    border-radius: 6px;
+    background: rgba(245, 237, 224, 0.5);
+    transition: background .2s;
+}
+.stat-row:hover { background: rgba(245, 237, 224, 0.9); }
+.stat-row.highlight {
+    background: linear-gradient(90deg, rgba(160,28,28,0.08), rgba(212,160,23,0.15));
+    border: 1px solid rgba(160, 28, 28, 0.2);
+}
+.stat-label {
+    font-size: 13px;
+    color: #666;
+    font-weight: 500;
+}
+.stat-value {
+    font-size: 18px;
+    font-weight: 700;
+    color: #333;
+    font-family: 'Consolas', 'Monaco', monospace;
+}
+.stat-value em {
+    font-size: 12px;
+    font-style: normal;
+    color: #888;
+    margin-left: 2px;
+    font-weight: 500;
+}
+.stat-value.attack    { color: #a01c1c; font-size: 22px; }
+.stat-value.crit      { color: #d4a017; }
+.stat-value.crit-eff  { color: #e67e22; }
+.stat-value.pofang    { color: #c0392b; }
+.stat-value.neifang   { color: #34495e; }
+.stat-value.huajin    { color: #5f3a8f; }
+.stat-value.yujin     { color: #2c7a7b; }
+.stat-value.yuxiao    { color: #2c7a7b; }
+
+.enemy-panel .stat-row.highlight { background: rgba(74, 74, 74, 0.1); }
+
+/* Dialog */
+.mj-dialog >>> .el-dialog__header {
+    background: linear-gradient(90deg, #8B0000 0%, #a01c1c 100%);
+    padding: 16px 20px;
+    border-radius: 6px 6px 0 0;
+}
+.mj-dialog >>> .el-dialog__title { color: #fff; font-weight: 700; letter-spacing: 2px; }
+.mj-dialog >>> .el-dialog__headerbtn .el-dialog__close { color: #fff; }
+
+.dmg-normal {
+    font-family: 'Consolas', monospace;
+    font-weight: 600;
+    color: #333;
+}
+.dmg-crit {
+    font-family: 'Consolas', monospace;
+    font-weight: 700;
+    color: #d4a017;
+}
+
+/* 序列区 */
+.seq-section { margin-bottom: 20px; }
+.seq-section-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: #8B0000;
+    margin-bottom: 10px;
+    padding-left: 8px;
+    border-left: 3px solid #a01c1c;
+}
+.seq-list {
+    min-height: 44px;
+    padding: 8px;
+    background: #fafafa;
+    border: 1px dashed #ddd;
+    border-radius: 6px;
+}
+.seq-tag {
+    margin: 4px 6px 4px 0;
+    cursor: default;
+}
+.seq-empty {
+    color: #aaa;
+    font-size: 13px;
+    padding-left: 4px;
+}
+
+/* input-number 缩紧 */
+.el-form-item { margin-bottom: 12px !important; }
+
+/* 双图并列 */
+.chart-wrap {
+    background: #fafafa;
+    border: 1px solid #eee;
+    border-radius: 8px;
+    padding: 10px;
+}
+.chart-title {
+    text-align: center;
+    font-size: 13px;
+    padding: 6px 0 4px;
+    border-bottom: 1px dashed #e0e0e0;
+    margin-bottom: 6px;
+}
+.chart-title b {
+    font-family: 'Consolas', monospace;
+    font-size: 15px;
+    margin-left: 6px;
+}
+.chart-title.non-crit { color: #555; }
+.chart-title.non-crit b { color: #333; }
+.chart-title.crit { color: #8B0000; }
+.chart-title.crit b { color: #d4a017; }
+
+/* 技能系数表 */
+.coef-cell {
+    font-family: 'Consolas', monospace;
+    color: #333;
+}
+.coef-cell.subtotal {
+    font-weight: 700;
+    color: #a01c1c;
+}
+.coef-pct {
+    font-family: 'Consolas', monospace;
+    color: #d4a017;
+    font-weight: 600;
+}
+</style>
