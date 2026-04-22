@@ -1,7 +1,7 @@
 <template>
     <div class="header">
         <img src="../assets/jiaobiao.png" class="logo">
-        <div class="info">Ver1.12</div>
+        <div class="info">Ver1.13</div>
     </div>
 </template>
 
