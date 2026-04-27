@@ -72,10 +72,11 @@
                     </div>
                     <div class="buff-group">
                         <div class="buff-group-title"><i class="el-icon-magic-stick"></i> 奇穴 / 秘籍</div>
-                        <el-checkbox v-model="pvpShou" label="PVP手" size="mini" border></el-checkbox>
-                        <el-checkbox v-model="jianFengBaiDuan" label="剑锋百锻" size="mini" border></el-checkbox>
                         <el-checkbox v-model="yonghuierming" label="用晦而明" size="mini" border></el-checkbox>
-                        <el-checkbox v-model="judian" label="据点增益" size="mini" border></el-checkbox>
+                        <el-checkbox v-model="youyinChenJi" label="幽隐尘寂" size="mini" border></el-checkbox>
+                        <el-checkbox v-model="wumingyingfu" label="无明影缚" size="mini" border></el-checkbox>
+                        <el-checkbox v-model="mingyueduxin" label="溟月度心" size="mini" border></el-checkbox>
+                        <el-checkbox v-model="jimieJiehui" label="寂灭劫灰" size="mini" border></el-checkbox>
                     </div>
                     <el-divider class="mj-divider"></el-divider>
                     <div class="buff-group">
@@ -97,16 +98,17 @@
                     </div>
                 </el-card>
 
-                <!-- 敌方减伤 -->
+                <!-- 敌方增益 -->
                 <el-card class="mj-card" shadow="hover">
                     <div slot="header" class="mj-card-header">
-                        <span class="mj-title enemy">敌方减伤</span>
+                        <span class="mj-title enemy">敌方增益</span>
                     </div>
                     <div class="buff-group">
                         <el-checkbox v-model="shengyong" label="圣咏" size="mini" border></el-checkbox>
                         <el-checkbox v-model="zhanlong" label="战龙" size="mini" border></el-checkbox>
                         <el-checkbox v-model="yijifuhuodian" label="10减伤复活点" size="mini" border></el-checkbox>
                         <el-checkbox v-model="erjifuhuodian" label="20减伤复活点" size="mini" border></el-checkbox>
+                        <el-checkbox v-model="zhanjie14" label="14战阶" size="mini" border></el-checkbox>
                     </div>
                 </el-card>
 
@@ -145,7 +147,7 @@
                     <div class="seq-section">
                         <div class="seq-section-title">技能选择</div>
                         <el-button-group>
-                            <el-button v-for="btn in comboButtons" :key="btn" type="primary" size="small" @click="pushJiNengXuLie(btn)">{{ btn }}</el-button>
+                            <el-button v-for="btn in comboButtons" :key="btn" type="primary" size="small" :disabled="isComboBtnDisabled(btn)" @click="pushJiNengXuLie(btn)">{{ btn }}</el-button>
                         </el-button-group>
                     </div>
 
@@ -236,9 +238,19 @@
                 </el-card>
 
                 <el-card class="mj-card panel-card gain-panel" shadow="hover">
-                    <div slot="header" class="mj-card-header">
+                    <div slot="header" class="mj-card-header gain-header">
                         <span class="mj-title"><i class="el-icon-trophy"></i> 属性收益</span>
-                        <span class="mj-hint">以单体日破期望伤害为参考</span>
+                        <el-select
+                            v-model="refSkill"
+                            size="mini"
+                            class="ref-skill-select"
+                            placeholder="参考技能">
+                            <el-option
+                                v-for="opt in refSkillOptions"
+                                :key="opt"
+                                :label="opt"
+                                :value="opt"/>
+                        </el-select>
                     </div>
                     <div class="stat-grid">
                         <div
@@ -276,7 +288,7 @@
     import {
         normalDamage,
         critDamage,
-        comboButtons,
+        comboButtons as baseComboButtons,
         comboNormalDamage,
         comboCritDamage,
         comboCoefs,
@@ -295,22 +307,20 @@
                 totalCrit: 0,
                 无间影狱: 1.1,
                 //我方面板
-                元气: 11691,
-                基础攻击: 52716,
-                会心值: 24525,
-                会效值: 9724,
-                破防值: 94083,
+                元气: 14383,
+                基础攻击: 66827,
+                会心值: 76467,
+                会效值: 18632,
+                破防值: 99661,
                 //敌方面板
-                化劲: 51423,
-                御劲: 2632,
-                内防值: 16830,
+                化劲: 33067,
+                御劲: 2451,
+                内防值: 16219,
                 //增益开关
                 jingtitiandi: 1,
-                pvpShou: true,
                 mingguanghengzhao: false,
                 xuanxiangzhuming: true,
                 tiandi: false,
-                judian: false,
                 chengwu: true,
                 紫元气小药: false,
                 紫元气小吃: false,
@@ -320,16 +330,29 @@
                 紫元气酒: false,
                 紫攻击创意: false,
                 mingjiaozhen: false,
-                jianFengBaiDuan: false,
                 yonghuierming: false,
+                youyinChenJi: false,
+                wumingyingfu: false,
+                mingyueduxin: false,
+                jimieJiehui: false,
                 texiaoyaozhui: false,
                 shengyong: false,
                 zhanlong: false,
                 yijifuhuodian: false,
                 erjifuhuodian: false,
+                zhanjie14: false,
                 jiNengDialog: false,
                 lianzhaoDialog: false,
-                comboButtons,
+                //属性收益参考技能（可选）
+                refSkill: '单体日破',
+                refSkillOptions: [
+                    '绕背驱夜',
+                    '单体日破',
+                    '单体月破',
+                    '普通诛邪',
+                    '三段日月晦',
+                    '日斩',
+                ],
             };
         },
         computed: {
@@ -341,6 +364,7 @@
                     无间影狱: this.无间影狱,
                     neifang: +this.neifang(),
                     huajin: +this.huajin(),
+                    huajin日破: +this.huajin日破(),
                     huixiao: +this.huixiao(),
                     yuxiao: +this.yuxiao(),
                     chengwu: this.chengwu ? 1 : 0,
@@ -348,7 +372,28 @@
                     zhanlong: this.zhanlong ? 1 : 0,
                     yijifuhuodian: this.yijifuhuodian ? 1 : 0,
                     erjifuhuodian: this.erjifuhuodian ? 1 : 0,
+                    mingyueduxin: this.mingyueduxin ? 1 : 0,
                 };
+            },
+            comboButtons() {
+                return this.wumingyingfu
+                    ? [...baseComboButtons, '无明影缚', '无明影缚(斩杀)']
+                    : baseComboButtons;
+            },
+            // 按顺序模拟技能序列，记录每次施放时寂灭劫灰对该技能的乘子
+            // 规则：每打一个破魔击(日破/月破)+1 层(上限 3)，每次日破系数 +15%×当前层数（不消耗）
+            sequenceCasts() {
+                let stacks = 0;
+                return this.jiNengXuLie.map((skill) => {
+                    let mult = 1;
+                    if (this.jimieJiehui && skill === '日破') {
+                        mult = 1 + 0.15 * stacks;
+                    }
+                    if (this.jimieJiehui && (skill === '日破' || skill === '月破')) {
+                        stacks = Math.min(3, stacks + 1);
+                    }
+                    return { skill, mult };
+                });
             },
             damageTableData() {
                 const c = this.ctx;
@@ -356,27 +401,38 @@
                 return [
                     { name: '绕背驱夜',           normal: f(normalDamage.绕背驱夜(c)),     crit: f(critDamage.绕背驱夜(c)) },
                     { name: '单体日破',           normal: f(normalDamage.单体日破(c)),     crit: f(critDamage.单体日破(c)) },
-                    { name: '单体超凡日破',       normal: f(normalDamage.单体超凡日破(c)), crit: f(critDamage.单体超凡日破(c)) },
                     { name: '单体月破',           normal: f(normalDamage.单体月破(c)),     crit: f(critDamage.单体月破(c)) },
-                    { name: '4跳日大',            normal: f(normalDamage.四跳日大(c)),     crit: '—' },
                     { name: '普通诛邪',           normal: f(normalDamage.普通诛邪(c)),     crit: f(critDamage.普通诛邪(c)) },
-                    { name: '超凡诛邪',           normal: f(normalDamage.超凡诛邪(c)),     crit: f(critDamage.超凡诛邪(c)) },
                     { name: '3段日月晦总伤害',    normal: f(normalDamage.三段日月晦(c)),   crit: f(critDamage.三段日月晦(c)) },
                     { name: '橙戒指',             normal: f(normalDamage.橙戒指(c)),       crit: f(critDamage.橙戒指(c)) },
                     { name: '橙武特效单次伤害',   normal: f(normalDamage.橙武特效(c)),     crit: f(critDamage.橙武特效(c)) },
+                    { name: '无明影缚',           normal: f(normalDamage.无明影缚(c)),     crit: f(critDamage.无明影缚(c)) },
+                    { name: '无明影缚(斩杀)',     normal: f(normalDamage['无明影缚(斩杀)'](c)), crit: f(critDamage['无明影缚(斩杀)'](c)) },
                 ];
             },
             comboCoefData() {
                 const c = this.ctx;
                 const map = {};
-                this.jiNengXuLie.forEach((skill) => {
+                const addCast = (skill, baseCoef, mult) => {
                     if (!map[skill]) {
-                        map[skill] = { name: skill, count: 0, coef: comboCoefs[skill](c), subtotal: 0 };
+                        map[skill] = { name: skill, count: 0, subtotal: 0 };
                     }
                     map[skill].count += 1;
-                    map[skill].subtotal += map[skill].coef;
+                    map[skill].subtotal += baseCoef * mult;
+                };
+                this.sequenceCasts.forEach(({ skill, mult }) => {
+                    addCast(skill, comboCoefs[skill](c), mult);
+                    if (this.chengwu && !this.yuanhuoExempt(skill)) {
+                        addCast('愿火长燃', comboCoefs['愿火长燃'](c), 1);
+                    }
                 });
-                return Object.values(map);
+                // 单次系数取该技能在序列中的实际平均值（含寂灭加成）
+                return Object.values(map).map((r) => ({
+                    name: r.name,
+                    count: r.count,
+                    coef: r.subtotal / r.count,
+                    subtotal: r.subtotal,
+                }));
             },
             totalCoef() {
                 return this.comboCoefData.reduce((s, r) => s + r.subtotal, 0);
@@ -384,12 +440,13 @@
             totalCount() {
                 return this.comboCoefData.reduce((s, r) => s + r.count, 0);
             },
-            //属性收益：基于单体日破期望伤害（会心加权）做有限差分
+            //属性收益：基于参考技能期望伤害（会心加权）做有限差分
             statGains() {
                 const s = this.$data;
-                const base = expectedDamage(buildCtxFromState(s));
+                const skill = this.refSkill;
+                const base = expectedDamage(buildCtxFromState(s), skill);
                 const probe = (key, step = 1000) => {
-                    const perturbed = expectedDamage(buildCtxFromState({ ...s, [key]: (s[key] - 0) + step }));
+                    const perturbed = expectedDamage(buildCtxFromState({ ...s, [key]: (s[key] - 0) + step }), skill);
                     return (perturbed - base) / step;
                 };
                 const fmt = (v) => v.toFixed(2);
@@ -403,7 +460,7 @@
             },
             //期望伤害（用于面板展示 "参考伤害"）
             referenceExpectedDamage() {
-                return expectedDamage(buildCtxFromState(this.$data)).toFixed(0);
+                return expectedDamage(buildCtxFromState(this.$data), this.refSkill).toFixed(0);
             },
         },
         methods: {
@@ -423,7 +480,7 @@
             },
             面板攻击() {
                 return ((this.yuanqi() * 1.99) + (this.jichugongji() * 1)
-                    * (1 + 0.05 * this.mingjiaozhen + 0.5 * this.judian + 0.3 * this.jianFengBaiDuan + 0.1 * this.tiandi)).toFixed(0);
+                    * (1 + 0.05 * this.mingjiaozhen + 0.1 * this.tiandi)).toFixed(0);
             },
             huixin() {
                 const v = (((((this.会心值 - 0) + (this.紫元气小吃 * 284 + this.紫元气小药 * 365 + this.紫元气酒 * 208) * 0.29) / 197703.0 - 0) * 100)
@@ -443,8 +500,16 @@
                 return v > 80 ? 80 : v.toFixed(2);
             },
             huajin() {
-                const eff = this.化劲 - 0 - 2756 * this.pvpShou;
-                const v = eff / (eff + 33046.2) * 100 + 9.9609375;
+                const base = (this.化劲 - 0) * (1 + 0.1 * this.zhanjie14);
+                const v = base / (base + 33046.2) * 100 + 9.9609375;
+                if (v > 80) return 80;
+                if (v < 10) return 10;
+                return v.toFixed(2);
+            },
+            huajin日破() {
+                if (!this.youyinChenJi) return this.huajin();
+                const base = (this.化劲 - 0) * 0.85 * (1 + 0.1 * this.zhanjie14);
+                const v = base / (base + 33046.2) * 100 + 9.9609375;
                 if (v > 80) return 80;
                 if (v < 10) return 10;
                 return v.toFixed(2);
@@ -459,7 +524,17 @@
                 const v = this.御劲 / 55123.2 * 100;
                 return v > 40 ? 40 : v.toFixed(2);
             },
+            yuanhuoExempt(skill) {
+                return skill === '诛邪' || skill === '无明影缚' || skill === '无明影缚(斩杀)';
+            },
+            isComboBtnDisabled(btn) {
+                if (btn === '无明影缚' || btn === '无明影缚(斩杀)') {
+                    return this.jiNengXuLie.includes(btn);
+                }
+                return false;
+            },
             pushJiNengXuLie(x) {
+                if ((x === '无明影缚' || x === '无明影缚(斩杀)') && this.jiNengXuLie.includes(x)) return;
                 this.jiNengXuLie.push(x);
                 this.updateChart();
             },
@@ -495,14 +570,19 @@
             aggregate(dataGetter) {
                 const damageData = [];
                 let total = 0;
-                this.jiNengXuLie.forEach((skill) => {
-                    const damage = dataGetter(skill);
+                const addData = (name, damage) => {
                     total += damage;
-                    const existing = damageData.find((item) => item.name === skill);
+                    const existing = damageData.find((item) => item.name === name);
                     if (existing) {
                         existing.value += damage;
                     } else {
-                        damageData.push({ name: skill, value: damage });
+                        damageData.push({ name, value: damage });
+                    }
+                };
+                this.sequenceCasts.forEach(({ skill, mult }) => {
+                    addData(skill, Math.round(dataGetter(skill) * mult));
+                    if (this.chengwu && !this.yuanhuoExempt(skill)) {
+                        addData('愿火长燃', dataGetter('愿火长燃'));
                     }
                 });
                 return { damageData, total };
@@ -536,6 +616,22 @@
         watch: {
             lianzhaoDialog(newVal) {
                 if (newVal) this.$nextTick(() => this.initChart());
+            },
+            chengwu() {
+                if (this.lianzhaoDialog) this.updateChart();
+            },
+            youyinChenJi() {
+                if (this.lianzhaoDialog) this.updateChart();
+            },
+            wumingyingfu(val) {
+                if (val) this.mingyueduxin = false;
+            },
+            mingyueduxin(val) {
+                if (val) this.wumingyingfu = false;
+                if (this.lianzhaoDialog) this.updateChart();
+            },
+            jimieJiehui() {
+                if (this.lianzhaoDialog) this.updateChart();
             },
         },
         beforeDestroy() {
@@ -662,6 +758,14 @@
 .stat-value.gain.crit      { color: #d4a017; }
 .stat-value.gain.crit-eff  { color: #e67e22; }
 .stat-value.gain.pofang    { color: #8B0000; }
+
+.gain-header { justify-content: space-between; width: 100%; }
+.ref-skill-select { width: 140px; }
+.ref-skill-select >>> .el-input__inner {
+    border-color: rgba(160, 28, 28, 0.3);
+    color: #8B0000;
+    font-weight: 600;
+}
 
 .mj-dialog >>> .el-dialog__header {
     background: linear-gradient(90deg, #8B0000 0%, #a01c1c 100%);
