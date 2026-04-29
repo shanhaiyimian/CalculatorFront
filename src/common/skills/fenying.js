@@ -145,12 +145,12 @@ export const comboTagType = {
 // 以及所有增益开关 (boolean / 0-1)
 export function buildCtxFromState(s) {
     const b = (v) => (v ? 1 : 0);
-    const yqBonus = b(s.紫元气小吃) * 284 + b(s.紫元气小药) * 365 + b(s.紫元气酒) * 208;
+    const yqBonus = b(s.紫元气小吃) * 736 + b(s.紫元气小药) * 946 + b(s.紫元气酒) * 544;
 
     const 面板元气 = (s.元气 - 0) + yqBonus;
     const 面板基础攻击 = (s.基础攻击 - 0)
-        + b(s.紫攻击小药) * 875 + b(s.紫攻击小吃) * 680
-        + b(s.紫武器附魔) * 583 + b(s.紫攻击创意) * 850
+        + b(s.紫攻击小药) * 2236 + b(s.紫攻击小吃) * 1739
+        + b(s.紫武器附魔) * 1491 + b(s.紫攻击创意) * 2170
         + 0.1 * yqBonus;
     const 面板攻击 = 面板元气 * 1.99
         + 面板基础攻击 * (1 + 0.05 * b(s.mingjiaozhen) + 0.1 * b(s.tiandi));

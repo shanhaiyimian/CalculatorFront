@@ -471,19 +471,19 @@
                 return comboTagType[skill] || '';
             },
             yuanqi() {
-                return ((this.元气 - 0) + this.紫元气小吃 * 284 + this.紫元气小药 * 365 + this.紫元气酒 * 208).toFixed(0);
+                return ((this.元气 - 0) + this.紫元气小吃 * 736 + this.紫元气小药 * 946 + this.紫元气酒 * 544).toFixed(0);
             },
             jichugongji() {
-                return (((this.基础攻击 - 0) + this.紫攻击小药 * 875 + this.紫攻击小吃 * 680
-                    + this.紫武器附魔 * 583 + this.紫攻击创意 * 850
-                    + 0.1 * (this.紫元气小吃 * 284 + this.紫元气小药 * 365 + this.紫元气酒 * 208))).toFixed(0);
+                return (((this.基础攻击 - 0) + this.紫攻击小药 * 2236 + this.紫攻击小吃 * 1739
+                    + this.紫武器附魔 * 1491 + this.紫攻击创意 * 2170
+                    + 0.1 * (this.紫元气小吃 * 736 + this.紫元气小药 * 946 + this.紫元气酒 * 544))).toFixed(0);
             },
             面板攻击() {
                 return ((this.yuanqi() * 1.99) + (this.jichugongji() * 1)
                     * (1 + 0.05 * this.mingjiaozhen + 0.1 * this.tiandi)).toFixed(0);
             },
             huixin() {
-                const v = (((((this.会心值 - 0) + (this.紫元气小吃 * 284 + this.紫元气小药 * 365 + this.紫元气酒 * 208) * 0.29) / 197703.0 - 0) * 100)
+                const v = (((((this.会心值 - 0) + (this.紫元气小吃 * 736 + this.紫元气小药 * 946 + this.紫元气酒 * 544) * 0.29) / 197703.0 - 0) * 100)
                     + ((this.无间影狱 === 1 ? 1 : 0) * 10) + 13 * this.mingjiaozhen);
                 return v > 100 ? 100 : v.toFixed(2);
             },
@@ -492,7 +492,7 @@
                 return v > 300 ? 300 : v.toFixed(2);
             },
             pofang() {
-                return ((((this.破防值 - 0) + 36472 * this.texiaoyaozhui + 0.3 * (this.紫元气小吃 * 284 + this.紫元气小药 * 365 + this.紫元气酒 * 208)) / 225957.6) * 100).toFixed(2);
+                return ((((this.破防值 - 0) + 36472 * this.texiaoyaozhui + 0.3 * (this.紫元气小吃 * 736 + this.紫元气小药 * 946 + this.紫元气酒 * 544)) / 225957.6) * 100).toFixed(2);
             },
             neifang() {
                 const eff = this.内防值 * (1 - 0.55 * this.yonghuierming);
