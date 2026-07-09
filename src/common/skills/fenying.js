@@ -5,33 +5,8 @@
 export const COEFS = {
     // 绕背驱夜断愁  260*1.1*1.05*1.05*1.05  lv29  已计算绕背
     驱夜断愁: 1.2604 * 1.3 * 1.6 * 3,
-    // 诛邪镇魔×2  225*1.05*1.1*1.1  lv32
-    诛邪镇魔: 1.7083 * 2,
-    赤日轮1: 0.8697,
-    赤日轮2: 0.8697,
-    赤日轮3: 1.0885,
-    幽月轮1: 0.7916,
-    幽月轮2: 0.7916,
-    幽月轮3: 0.9062,
-    // 月破 60 * 1.15 * 1.1*1.1*1.1*1.05*1.1*1.1*1.15 *3 (单次*3)  lv32
-    月破: 0.8385 * 3,
-    // 日破 单体 180*1.15*1.1*1.1*1.1*1.05*1.1*1.1*1.15  lv32
-    日破: 2.5156,
-    // 日月晦 三段总系数
-    日月晦: 5.0625,
-    生死劫日: 0.35,
-    生死劫月: 0.35,
-    烈日斩: 1.2708,
-    银月斩: 0.7500,
-    银月斩Dot: 0.16,
-    洞若观火: 0.2604,
-    // 净体不畏层级
-    jingTiBuWeriRiLV1: 0.61875,
-    jingTiBuWeriRiLV2: 0.4640625,
-    jingTiBuWeriRiLV3: 1.0209375,
-    jingTiBuWeriRiLV4: 0.0928125,
-    jingTiBuWeriRiLV5: 0.0928125,
-    chongGuangZhanE: 37.038744,
+    // 日破 单体  lv32
+    日破: 3.327335615780859,
 };
 
 // ---------- 共用乘子 ----------
@@ -75,7 +50,7 @@ export const normalDamage = {
 // ---------- 会心技能伤害 ----------
 export const critDamage = {
     绕背驱夜:       (c) => mishuChengwu(c) * COEFS.驱夜断愁 * envMul(c) * critMul(c),
-    单体日破:       (c) => mishuChengwuRiYue(c) * 1.6574 * envMul(c, c.huajin日破) * critMul(c),
+    单体日破:       (c) => mishuChengwuRiYue(c) * 3.327335615780859 * envMul(c, c.huajin日破) * critMul(c),
     单体月破:       (c) => mishuChengwuRiYue(c) * 0.5525 * 3 * envMul(c) * critMul(c),
     普通诛邪:       (c) => mishuChengwu(c) * 2.707089 * envMul(c) * critMul(c),
     三段日月晦:     (c) => 1.265625 * 4 * envMul(c) * critMul(c),
@@ -86,7 +61,7 @@ export const critDamage = {
     愿火长燃:       (c) => 2.0 * envMul(c) * critMul(c),
     无明影缚:       (c) => 10.0 * envMul(c) * critMul(c),
     '无明影缚(斩杀)': (c) => 10.0 * 1.5 * envMul(c) * critMul(c),
-    日斩:           (c) => (1 * 1.25 * 1.25 * (1 + 0.22) * 1.18540627734375 + 1.18540627734375) * envMul(c) * critMul(c),
+    日斩:           (c) => (1 * 1.25 * 1.25 * 2 * (1 + 0.22) * 1.18540627734375 + 1.18540627734375) * envMul(c) * critMul(c),
 };
 
 // ---------- 连招序列按钮 ----------
@@ -152,8 +127,8 @@ export function buildCtxFromState(s) {
         + b(s.紫攻击小药) * 2236 + b(s.紫攻击小吃) * 1739
         + b(s.紫武器附魔) * 1491 + b(s.紫攻击创意) * 2170
         + 0.1 * yqBonus;
-    const 面板攻击 = 面板元气 * 1.99
-        + 面板基础攻击 * (1 + 0.05 * b(s.mingjiaozhen) + 0.1 * b(s.tiandi));
+    const 面板攻击 = (面板元气 * 1.99 + 面板基础攻击)
+        * (1 + 0.05 * b(s.mingjiaozhen) + 0.1 * b(s.tiandi));
 
     const wuJianMod = (s.无间影狱 === 1 ? 1 : 0);
 
@@ -170,17 +145,17 @@ export function buildCtxFromState(s) {
     const neifangEff = s.内防值 * (1 - 0.55 * b(s.yonghuierming));
     const neifang = Math.min(80, neifangEff / (neifangEff + 126007.2) * 100);
 
-    const huajinBase = (s.化劲 - 0) * (1 + 0.1 * b(s.zhanjie14));
+    const huajinBase = (s.化劲 - 0) * (1 + 0.1 * b(s.zhanjie14)) * (1 + 0.3 * b(s.yuHuaDaQi));
     const huajinRaw = huajinBase / (huajinBase + 33046.2) * 100 + 9.9609375;
     const huajin = Math.max(10, Math.min(80, huajinRaw));
 
-    const huajin日破Base = (s.化劲 - 0) * (b(s.youyinChenJi) ? 0.85 : 1) * (1 + 0.1 * b(s.zhanjie14));
+    const huajin日破Base = (s.化劲 - 0) * (b(s.youyinChenJi) ? 0.85 : 1) * (1 + 0.1 * b(s.zhanjie14)) * (1 + 0.3 * b(s.yuHuaDaQi));
     const huajin日破Raw = huajin日破Base / (huajin日破Base + 33046.2) * 100 + 9.9609375;
     const huajin日破 = Math.max(10, Math.min(80, huajin日破Raw));
 
-    const yujinRaw = s.御劲 / 197703.0 * 100;
+    const yujinRaw = s.御劲 * (1 + 0.15 * b(s.yuHuaDaQi)) / 197703.0 * 100;
     const yujin = Math.max(0, Math.min(100, yujinRaw));
-    const yuxiao = Math.min(40, s.御劲 / 55123.2 * 100);
+    const yuxiao = Math.min(40, s.御劲 * (1 + 0.15 * b(s.yuHuaDaQi)) / 55123.2 * 100);
 
     return {
         // 面板展示用

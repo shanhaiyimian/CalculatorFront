@@ -109,6 +109,7 @@
                         <el-checkbox v-model="yijifuhuodian" label="10减伤复活点" size="mini" border></el-checkbox>
                         <el-checkbox v-model="erjifuhuodian" label="20减伤复活点" size="mini" border></el-checkbox>
                         <el-checkbox v-model="zhanjie14" label="14战阶" size="mini" border></el-checkbox>
+                        <el-checkbox v-model="yuHuaDaQi" label="御化大旗" size="mini" border></el-checkbox>
                     </div>
                 </el-card>
 
@@ -313,8 +314,8 @@
                 会效值: 18632,
                 破防值: 99661,
                 //敌方面板
-                化劲: 33067,
-                御劲: 2451,
+                化劲: 51525,
+                御劲: 5047,
                 内防值: 16219,
                 //增益开关
                 jingtitiandi: 1,
@@ -340,7 +341,8 @@
                 zhanlong: false,
                 yijifuhuodian: false,
                 erjifuhuodian: false,
-                zhanjie14: false,
+                zhanjie14: true,
+                yuHuaDaQi: false,
                 jiNengDialog: false,
                 lianzhaoDialog: false,
                 //属性收益参考技能（可选）
@@ -500,7 +502,7 @@
                 return v > 80 ? 80 : v.toFixed(2);
             },
             huajin() {
-                const base = (this.化劲 - 0) * (1 + 0.1 * this.zhanjie14);
+                const base = (this.化劲 - 0) * (1 + 0.1 * this.zhanjie14) * (1 + 0.3 * this.yuHuaDaQi);
                 const v = base / (base + 33046.2) * 100 + 9.9609375;
                 if (v > 80) return 80;
                 if (v < 10) return 10;
@@ -508,20 +510,20 @@
             },
             huajin日破() {
                 if (!this.youyinChenJi) return this.huajin();
-                const base = (this.化劲 - 0) * 0.85 * (1 + 0.1 * this.zhanjie14);
+                const base = (this.化劲 - 0) * 0.85 * (1 + 0.1 * this.zhanjie14) * (1 + 0.3 * this.yuHuaDaQi);
                 const v = base / (base + 33046.2) * 100 + 9.9609375;
                 if (v > 80) return 80;
                 if (v < 10) return 10;
                 return v.toFixed(2);
             },
             yujin() {
-                const v = this.御劲 / 197703.0 * 100;
+                const v = this.御劲 * (1 + 0.15 * this.yuHuaDaQi) / 197703.0 * 100;
                 if (v < 0) return 0;
                 if (v > 100) return 100;
                 return v.toFixed(2);
             },
             yuxiao() {
-                const v = this.御劲 / 55123.2 * 100;
+                const v = this.御劲 * (1 + 0.15 * this.yuHuaDaQi) / 55123.2 * 100;
                 return v > 40 ? 40 : v.toFixed(2);
             },
             yuanhuoExempt(skill) {

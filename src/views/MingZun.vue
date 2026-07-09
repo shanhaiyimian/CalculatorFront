@@ -57,6 +57,7 @@
                         <el-checkbox v-model="zhanlong" label="战龙" size="mini" border></el-checkbox>
                         <el-checkbox v-model="yijifuhuodian" label="10减伤复活点" size="mini" border></el-checkbox>
                         <el-checkbox v-model="erjifuhuodian" label="20减伤复活点" size="mini" border></el-checkbox>
+                        <el-checkbox v-model="yuHuaDaQi" label="御化大旗" size="mini" border></el-checkbox>
                     </div>
                 </div>
                 <el-button type="text" @click="centerDialogVisible = true" round>点击打开技能伤害列表</el-button>
@@ -153,6 +154,7 @@
                 zhanlong:false,
                 yijifuhuodian:false,
                 erjifuhuodian:false,
+                yuHuaDaQi: false,
 
                 centerDialogVisible: false,
                 centerDialogVisible2: false
@@ -219,7 +221,7 @@
             },
             //面板化劲
             huajin(){
-                const eff = (this.huajin1-0)*(1-0.05*this.yicengyinzhui);
+                const eff = (this.huajin1-0)*(1-0.05*this.yicengyinzhui)*(1+0.3*this.yuHuaDaQi);
                 const v = eff/(eff+11385.0)*100+10;
                 if (v > 80) return 80;
                 if (v < 10) return 10;
@@ -227,14 +229,14 @@
             },
             //面板御劲
             yujin(){
-                const v = this.yujin1/78622.5*100;
+                const v = this.yujin1*(1+0.15*this.yuHuaDaQi)/78622.5*100;
                 if (v < 0) return 0;
                 if (v > 100) return 100;
                 return v.toFixed(1);
             },
             //面板御效
             yuxiao(){
-                const v = this.yujin1/21095.25*100;
+                const v = this.yujin1*(1+0.15*this.yuHuaDaQi)/21095.25*100;
                 return v > 40 ? 40 : v.toFixed(1);
             },
             wuqishanghai(){
