@@ -1,5 +1,5 @@
-// 焚影明教 技能系数与伤害计算 (万灵当歌版本)
-// 所有函数都以 ctx 为输入参数，ctx 由 Vue 组件通过 buildCtx 构造
+// 焚影：基础属性已适配苍生铸世；技能按已确认数据更新，其余倍率、奇穴仍待校准。
+// 面板、技能和属性收益统一由 buildCtxFromState 构造 ctx。
 
 // ---------- 技能基础系数常量 ----------
 export const COEFS = {
@@ -7,6 +7,11 @@ export const COEFS = {
     驱夜断愁: 1.2604 * 1.3 * 1.6 * 3,
     // 日破 单体  lv32
     日破: 3.327335615780859,
+    月潮: 12.0,
+    无明缚夜: 7.1979,
+    '无明缚夜(斩杀)': 7.1979 * 1.5,
+    圣裁刑晷: 4.375,
+    '圣裁刑晷(原地)': 4.375 * 1.5,
 };
 
 // ---------- 共用乘子 ----------
@@ -42,8 +47,11 @@ export const normalDamage = {
     橙戒指:         () => 11250,
     橙武特效:       (c) => 2 * envMul(c),
     愿火长燃:       (c) => 2.0 * envMul(c),
-    无明影缚:       (c) => 10.0 * envMul(c),
-    '无明影缚(斩杀)': (c) => 10.0 * 1.5 * envMul(c),
+    月潮:           (c) => COEFS.月潮 * envMul(c),
+    无明缚夜:       (c) => COEFS.无明缚夜 * envMul(c),
+    '无明缚夜(斩杀)': (c) => COEFS['无明缚夜(斩杀)'] * envMul(c),
+    圣裁刑晷:       (c) => COEFS.圣裁刑晷 * envMul(c),
+    '圣裁刑晷(原地)': (c) => COEFS['圣裁刑晷(原地)'] * envMul(c),
     日斩:           (c) => 1 * 1.25 * 1.25 * 2 * (1 + 0.22) * 1.18540627734375 * envMul(c),
 };
 
@@ -59,13 +67,16 @@ export const critDamage = {
     橙戒指:         () => 11250,
     橙武特效:       (c) => 2 * envMul(c) * critMul(c),
     愿火长燃:       (c) => 2.0 * envMul(c) * critMul(c),
-    无明影缚:       (c) => 10.0 * envMul(c) * critMul(c),
-    '无明影缚(斩杀)': (c) => 10.0 * 1.5 * envMul(c) * critMul(c),
+    月潮:           (c) => normalDamage.月潮(c) * critMul(c),
+    无明缚夜:       (c) => normalDamage.无明缚夜(c) * critMul(c),
+    '无明缚夜(斩杀)': (c) => normalDamage['无明缚夜(斩杀)'](c) * critMul(c),
+    圣裁刑晷:       (c) => normalDamage.圣裁刑晷(c) * critMul(c),
+    '圣裁刑晷(原地)': (c) => normalDamage['圣裁刑晷(原地)'](c) * critMul(c),
     日斩:           (c) => (1 * 1.25 * 1.25 * 2 * (1 + 0.22) * 1.18540627734375 + 1.18540627734375) * envMul(c) * critMul(c),
 };
 
 // ---------- 连招序列按钮 ----------
-export const comboButtons = ['驱夜', '日破', '月破', '诛邪', '日斩'];
+export const comboButtons = ['驱夜', '日破', '月破', '诛邪', '日斩', '月潮', '圣裁刑晷', '圣裁刑晷(原地)'];
 
 // 按钮 → 不会心伤害函数
 export const comboNormalDamage = {
@@ -75,8 +86,11 @@ export const comboNormalDamage = {
     诛邪: normalDamage.普通诛邪,
     日斩: normalDamage.日斩,
     愿火长燃: normalDamage.愿火长燃,
-    无明影缚: normalDamage.无明影缚,
-    '无明影缚(斩杀)': normalDamage['无明影缚(斩杀)'],
+    月潮: normalDamage.月潮,
+    无明缚夜: normalDamage.无明缚夜,
+    '无明缚夜(斩杀)': normalDamage['无明缚夜(斩杀)'],
+    圣裁刑晷: normalDamage.圣裁刑晷,
+    '圣裁刑晷(原地)': normalDamage['圣裁刑晷(原地)'],
 };
 
 // 按钮 → 会心伤害函数
@@ -87,8 +101,11 @@ export const comboCritDamage = {
     诛邪: critDamage.普通诛邪,
     日斩: critDamage.日斩,
     愿火长燃: critDamage.愿火长燃,
-    无明影缚: critDamage.无明影缚,
-    '无明影缚(斩杀)': critDamage['无明影缚(斩杀)'],
+    月潮: critDamage.月潮,
+    无明缚夜: critDamage.无明缚夜,
+    '无明缚夜(斩杀)': critDamage['无明缚夜(斩杀)'],
+    圣裁刑晷: critDamage.圣裁刑晷,
+    '圣裁刑晷(原地)': critDamage['圣裁刑晷(原地)'],
 };
 
 // 按钮 → 单次技能系数（只包含 秘籍+橙武 × 技能倍率，不含面板/破防/减伤）
@@ -99,8 +116,11 @@ export const comboCoefs = {
     诛邪: (c) => mishuChengwu(c) * 2.707089,
     日斩: () => 1 * 1.25 * 1.25 * 2 * (1 + 0.22) * 1.18540627734375,
     愿火长燃: () => 2.0,
-    无明影缚: () => 10.0,
-    '无明影缚(斩杀)': () => 15.0,
+    月潮: () => COEFS.月潮,
+    无明缚夜: () => COEFS.无明缚夜,
+    '无明缚夜(斩杀)': () => COEFS['无明缚夜(斩杀)'],
+    圣裁刑晷: () => COEFS.圣裁刑晷,
+    '圣裁刑晷(原地)': () => COEFS['圣裁刑晷(原地)'],
 };
 
 // 标签颜色映射（Element UI tag type）
@@ -111,58 +131,64 @@ export const comboTagType = {
     诛邪: 'success',
     日斩: 'warning',
     愿火长燃: 'warning',
-    无明影缚: 'danger',
-    '无明影缚(斩杀)': 'danger',
+    月潮: 'info',
+    无明缚夜: 'danger',
+    '无明缚夜(斩杀)': 'danger',
+    圣裁刑晷: 'success',
+    '圣裁刑晷(原地)': 'success',
 };
 
-// ---------- 纯函数：从 state 构建完整 ctx（供属性收益面板有限差分使用） ----------
-// 输入 s 必须包含：元气/基础攻击/会心值/会效值/破防值/化劲/御劲/内防值/无间影狱
-// 以及所有增益开关 (boolean / 0-1)
-export function buildCtxFromState(s) {
+// ---------- 苍生铸世基础属性（50级角色） ----------
+// https://www.jx3box.com/bps/109665 （2026-10-29，焚影心法转换）
+// https://www.jx3box.com/bps/109685 （2026-10-31，正式服属性体系）
+// 裸面板基础攻击已含元气固有转换0.19和心法固定攻击2662；
+// 裸面板会心/破防也已含元气贡献，只对 extraYuanqi 补齐新增部分。
+// extraYuanqi 用于计算额外1点元气收益，不是重新录入一份游戏面板。
+export function buildCtxFromState(s, extraYuanqi = 0) {
     const b = (v) => (v ? 1 : 0);
-    const yqBonus = b(s.紫元气小吃) * 736 + b(s.紫元气小药) * 946 + b(s.紫元气酒) * 544;
+    const n = (v) => Number.isFinite(Number(v)) ? Math.max(0, Number(v)) : 0;
+    const yqBonus = n(extraYuanqi);
 
-    const 面板元气 = (s.元气 - 0) + yqBonus;
-    const 面板基础攻击 = (s.基础攻击 - 0)
-        + b(s.紫攻击小药) * 2236 + b(s.紫攻击小吃) * 1739
-        + b(s.紫武器附魔) * 1491 + b(s.紫攻击创意) * 2170
-        + 0.1 * yqBonus;
-    const 面板攻击 = (面板元气 * 1.99 + 面板基础攻击)
+    // 旧版小药、附魔和腰坠固定点数未有新版依据，开关不再参与计算。
+    const 面板元气 = n(s.元气) + yqBonus;
+    const 面板基础攻击 = n(s.基础攻击) + 0.19 * yqBonus;
+    // 沿用原页面的增益层：阵法/天地只放大基础攻击，心法额外攻击单独相加。
+    const 面板攻击 = 面板元气 * 0.62 + 面板基础攻击
         * (1 + 0.05 * b(s.mingjiaozhen) + 0.1 * b(s.tiandi));
 
     const wuJianMod = (s.无间影狱 === 1 ? 1 : 0);
 
-    const huixinRaw = ((s.会心值 - 0) + yqBonus * 0.29) / 197703.0 * 100
+    const huixinRaw = (n(s.会心值) + yqBonus * 0.13) / 9512.91 * 100
         + wuJianMod * 10 + 13 * b(s.mingjiaozhen);
     const huixin = Math.min(100, huixinRaw);
 
-    const huixiaoRaw = s.会效值 / 72844.2 * 100 + 175
+    const huixiaoRaw = n(s.会效值) / 3504.6 * 100 + 175
         + wuJianMod * 5 + 20 * b(s.mingjiaozhen);
     const huixiao = Math.min(300, huixiaoRaw);
 
-    const pofang = ((s.破防值 - 0) + 36472 * b(s.texiaoyaozhui) + 0.3 * yqBonus) / 225957.6 * 100;
+    const pofang = (n(s.破防值) + 0.06 * yqBonus) / 10378.17 * 100;
 
-    const neifangEff = s.内防值 * (1 - 0.55 * b(s.yonghuierming));
-    const neifang = Math.min(80, neifangEff / (neifangEff + 126007.2) * 100);
+    const neifangEff = n(s.内防值) * (1 - 0.55 * b(s.yonghuierming));
+    const neifang = Math.min(80, neifangEff / (neifangEff + 10802.88) * 100);
 
-    const huajinBase = (s.化劲 - 0) * (1 + 0.1 * b(s.zhanjie14)) * (1 + 0.3 * b(s.yuHuaDaQi));
-    const huajinRaw = huajinBase / (huajinBase + 33046.2) * 100 + 9.9609375;
-    const huajin = Math.max(10, Math.min(80, huajinRaw));
+    const baseHuajin = s.敌方基础化劲 === false ? 0 : 9.9609375;
+    const huajinBase = n(s.化劲) * (1 + 0.1 * b(s.zhanjie14)) * (1 + 0.3 * b(s.yuHuaDaQi));
+    const huajin = Math.min(80, huajinBase / (huajinBase + 5148) * 100 + baseHuajin);
 
-    const huajin日破Base = (s.化劲 - 0) * (b(s.youyinChenJi) ? 0.85 : 1) * (1 + 0.1 * b(s.zhanjie14)) * (1 + 0.3 * b(s.yuHuaDaQi));
-    const huajin日破Raw = huajin日破Base / (huajin日破Base + 33046.2) * 100 + 9.9609375;
-    const huajin日破 = Math.max(10, Math.min(80, huajin日破Raw));
+    const huajin日破Base = huajinBase * (b(s.youyinChenJi) ? 0.85 : 1);
+    const huajin日破 = Math.min(80, huajin日破Base / (huajin日破Base + 5148) * 100 + baseHuajin);
 
-    const yujinRaw = s.御劲 * (1 + 0.15 * b(s.yuHuaDaQi)) / 197703.0 * 100;
+    // 上限沿用原计算器；两篇属性资料未重新校验这些战斗规则。
+    const yujinRaw = n(s.御劲) * (1 + 0.15 * b(s.yuHuaDaQi)) / 19025.82 * 100;
     const yujin = Math.max(0, Math.min(100, yujinRaw));
-    const yuxiao = Math.min(40, s.御劲 * (1 + 0.15 * b(s.yuHuaDaQi)) / 55123.2 * 100);
+    const yuxiao = Math.min(40, n(s.御劲) * (1 + 0.15 * b(s.yuHuaDaQi)) / 9422.82 * 100);
 
     return {
         // 面板展示用
         面板元气, 面板基础攻击, 面板攻击, huixin, huixiao, pofang,
         neifang, huajin, huajin日破, yujin, yuxiao,
         // 伤害公式所需
-        无间影狱: s.无间影狱,
+        无间影狱: s.无间影狱 == null ? 1.1 : n(s.无间影狱),
         chengwu: b(s.chengwu),
         shengyong: b(s.shengyong),
         zhanlong: b(s.zhanlong),
