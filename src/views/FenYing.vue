@@ -1,18 +1,12 @@
 <template>
     <div class="fenying">
-        <div class="version-note">
-            <strong>苍生铸世 · 双方固定50级</strong>
-            <span>基础属性及部分技能已更新；其余倍率、奇穴和伤害规则尚未完成新版校准，伤害结果仅供对比。</span>
-            <a href="https://www.jx3box.com/bps/109665" target="_blank" rel="noopener noreferrer">心法属性资料</a>
-            <a href="https://www.jx3box.com/bps/109685" target="_blank" rel="noopener noreferrer">属性换算资料</a>
-        </div>
         <el-row :gutter="16" class="main-row" style="margin:0px">
             <el-col :span="17">
                 <!-- 自身数值 -->
                 <el-card class="mj-card" shadow="hover">
                     <div slot="header" class="mj-card-header">
                         <span class="mj-title">自身数值</span>
-                        <span class="mj-hint">请录入50级、0增益游戏面板</span>
+                        <span class="mj-hint">请录入0增益游戏面板</span>
                     </div>
                     <p class="input-note">基础攻击填写游戏的基础攻击（已含元气固有转换及心法固定攻击），不要填写最终面板攻击。会心、会效、破防填写等级点数，不填百分比。换装后请同步更新全部输入。</p>
                     <el-form label-width="88px" size="small" label-position="right">
@@ -50,7 +44,7 @@
                 <el-card class="mj-card" shadow="hover">
                     <div slot="header" class="mj-card-header">
                         <span class="mj-title enemy">敌方数值</span>
-                        <span class="mj-hint">固定50级 · 无对应属性请填0</span>
+                        <span class="mj-hint">无对应属性请填0</span>
                     </div>
                     <el-form label-width="88px" size="small" label-position="right">
                         <el-row :gutter="16">
@@ -90,14 +84,24 @@
                     </div>
                     <el-divider class="mj-divider"></el-divider>
                     <div class="buff-group">
-                        <div class="buff-group-title"><i class="el-icon-goblet-full"></i> 小吃小药 / 附魔（新版数值待更新，暂不参与计算）</div>
-                        <el-checkbox v-model="紫元气小药" label="紫元气药" size="mini" border disabled></el-checkbox>
-                        <el-checkbox v-model="紫元气小吃" label="紫元气吃" size="mini" border disabled></el-checkbox>
-                        <el-checkbox v-model="紫攻击小药" label="紫攻击药" size="mini" border disabled></el-checkbox>
-                        <el-checkbox v-model="紫攻击小吃" label="紫攻击吃" size="mini" border disabled></el-checkbox>
-                        <el-checkbox v-model="紫武器附魔" label="紫武附魔" size="mini" border disabled></el-checkbox>
-                        <el-checkbox v-model="紫元气酒" label="紫元气酒" size="mini" border disabled></el-checkbox>
-                        <el-checkbox v-model="紫攻击创意" label="攻家园菜" size="mini" border disabled></el-checkbox>
+                        <div class="buff-group-title"><i class="el-icon-goblet-full"></i> 小吃小药 / 附魔 / 家园增益</div>
+                        <p class="input-note">每类仅可选择一项，不同类别可叠加；再次点击已选项可取消该类增益。</p>
+                        <div v-for="group in consumableGroups" :key="group.key" class="consumable-group">
+                            <div class="consumable-label">{{ group.label }}</div>
+                            <div class="consumable-options" role="group" :aria-label="group.label">
+                                <el-button
+                                    v-for="option in group.options"
+                                    :key="option.id"
+                                    :type="consumables[group.key] === option.id ? 'primary' : 'default'"
+                                    :aria-pressed="consumables[group.key] === option.id"
+                                    size="mini"
+                                    @click="toggleConsumable(group.key, option.id)">
+                                    <span class="consumable-name">{{ option.name }}</span>
+                                    <span class="consumable-value">+{{ option.value }} {{ option.stat }}</span>
+                                </el-button>
+                            </div>
+                        </div>
+                        <p class="input-note">宴席主属性按元气计算。创意料理均附带气血上限 -2094，本页只计算其伤害相关属性。</p>
                     </div>
                     <el-divider class="mj-divider"></el-divider>
                     <div class="buff-group">
@@ -254,17 +258,7 @@
                 <el-card class="mj-card panel-card gain-panel" shadow="hover">
                     <div slot="header" class="mj-card-header gain-header">
                         <span class="mj-title"><i class="el-icon-trophy"></i> 属性收益</span>
-                        <el-select
-                            v-model="refSkill"
-                            size="mini"
-                            class="ref-skill-select"
-                            placeholder="参考技能">
-                            <el-option
-                                v-for="opt in refSkillOptions"
-                                :key="opt"
-                                :label="opt"
-                                :value="opt"/>
-                        </el-select>
+                        <span class="mj-hint">基准：日破（当前增益）</span>
                     </div>
                     <div class="stat-grid" v-if="statsReady">
                         <div
@@ -275,7 +269,7 @@
                             <span class="stat-value gain" :class="g.cls">+{{ g.gain }}<em>伤害</em></span>
                         </div>
                         <div class="stat-row highlight">
-                            <span class="stat-label">参考期望伤害</span>
+                            <span class="stat-label">日破期望伤害</span>
                             <span class="stat-value attack">{{ referenceExpectedDamage }}</span>
                         </div>
                     </div>
@@ -312,6 +306,7 @@
         comboTagType,
         buildCtxFromState,
         expectedDamage,
+        consumableGroups,
     } from '@/common/skills/fenying';
 
     const exclusiveSkills = {
@@ -330,16 +325,16 @@
                 totalNormal: 0,
                 totalCrit: 0,
                 无间影狱: 1.1,
-                //我方面板
-                元气: undefined,
-                基础攻击: undefined,
-                会心值: undefined,
-                会效值: undefined,
-                破防值: undefined,
-                //敌方面板
-                化劲: undefined,
-                御劲: undefined,
-                内防值: undefined,
+                // 默认无增益面板，可按实际装备修改。
+                元气: 2779,
+                基础攻击: 7151,
+                会心值: 951,
+                会效值: 175,
+                破防值: 4151,
+                // 百分比反推等级点数；化劲50%包含非防御心法基础化劲。
+                化劲: 3438,
+                御劲: 380,
+                内防值: 1200,
                 敌方基础化劲: true,
                 //增益开关
                 jingtitiandi: 1,
@@ -347,13 +342,8 @@
                 xuanxiangzhuming: true,
                 tiandi: false,
                 chengwu: false,
-                紫元气小药: false,
-                紫元气小吃: false,
-                紫攻击小药: false,
-                紫攻击小吃: false,
-                紫武器附魔: false,
-                紫元气酒: false,
-                紫攻击创意: false,
+                consumableGroups,
+                consumables: { food: '', medicine: '', weapon: '', wine: '', cooking: '', banquet: '', perfume: '' },
                 mingjiaozhen: false,
                 yonghuierming: false,
                 youyinChenJi: false,
@@ -369,21 +359,6 @@
                 yuHuaDaQi: false,
                 jiNengDialog: false,
                 lianzhaoDialog: false,
-                //属性收益参考技能（可选）
-                refSkill: '单体日破',
-                refSkillOptions: [
-                    '绕背驱夜',
-                    '单体日破',
-                    '单体月破',
-                    '普通诛邪',
-                    '三段日月晦',
-                    '日斩',
-                    '月潮',
-                    '无明缚夜',
-                    '无明缚夜(斩杀)',
-                    '圣裁刑晷',
-                    '圣裁刑晷(原地)',
-                ],
             };
         },
         computed: {
@@ -470,33 +445,35 @@
             totalCount() {
                 return this.comboCoefData.reduce((s, r) => s + r.count, 0);
             },
-            //属性收益：基于参考技能期望伤害（会心加权）做有限差分
+            // 属性收益：固定以当前增益下的日破期望伤害做有限差分，按原始收益降序显示。
             statGains() {
                 if (!this.statsReady) return [];
                 const s = this.$data;
-                const skill = this.refSkill;
-                const base = expectedDamage(this.ctx, skill);
+                const base = expectedDamage(this.ctx);
                 const probe = (key) => {
                     const increased = key === '元气'
                         ? buildCtxFromState(s, 1)
                         : buildCtxFromState({ ...s, [key]: s[key] + 1 });
-                    return expectedDamage(increased, skill) - base;
+                    return expectedDamage(increased) - base;
                 };
-                const fmt = (v) => v.toFixed(2);
                 return [
-                    { stat: '1点元气',     icon: 'el-icon-lightning',   gain: fmt(probe('元气')),     cls: 'yuanqi' },
-                    { stat: '1点基础攻击', icon: 'el-icon-aim',         gain: fmt(probe('基础攻击')), cls: 'attack' },
-                    { stat: '1点会心',     icon: 'el-icon-star-on',     gain: fmt(probe('会心值')),   cls: 'crit' },
-                    { stat: '1点会效',     icon: 'el-icon-magic-stick', gain: fmt(probe('会效值')),   cls: 'crit-eff' },
-                    { stat: '1点破防',     icon: 'el-icon-discover',    gain: fmt(probe('破防值')),   cls: 'pofang' },
-                ];
+                    { stat: '1点元气',     icon: 'el-icon-lightning',   gain: probe('元气'),     cls: 'yuanqi' },
+                    { stat: '1点基础攻击', icon: 'el-icon-aim',         gain: probe('基础攻击'), cls: 'attack' },
+                    { stat: '1点会心',     icon: 'el-icon-star-on',     gain: probe('会心值'),   cls: 'crit' },
+                    { stat: '1点会效',     icon: 'el-icon-magic-stick', gain: probe('会效值'),   cls: 'crit-eff' },
+                    { stat: '1点破防',     icon: 'el-icon-discover',    gain: probe('破防值'),   cls: 'pofang' },
+                ].sort((a, b) => b.gain - a.gain)
+                    .map((item) => ({ ...item, gain: item.gain.toFixed(2) }));
             },
-            //期望伤害（用于面板展示 "参考伤害"）
+            // 当前增益下的日破期望伤害
             referenceExpectedDamage() {
-                return this.statsReady ? expectedDamage(this.ctx, this.refSkill).toFixed(0) : '待录入';
+                return this.statsReady ? expectedDamage(this.ctx).toFixed(0) : '待录入';
             },
         },
         methods: {
+            toggleConsumable(groupKey, optionId) {
+                this.consumables[groupKey] = this.consumables[groupKey] === optionId ? '' : optionId;
+            },
             coefSummary() {
                 return ['合计', this.totalCount, '—', this.totalCoef.toFixed(5), '100%'];
             },
@@ -705,6 +682,18 @@
 .buff-group-title i { margin-right: 4px; }
 .buff-group .el-checkbox { margin: 4px 6px 4px 0 !important; }
 
+.consumable-group { margin-bottom: 12px; }
+.consumable-label { margin-bottom: 5px; font-size: 12px; font-weight: 600; color: #716353; }
+.consumable-options { display: flex; flex-wrap: wrap; gap: 6px; }
+.consumable-options .el-button {
+    margin: 0;
+    white-space: normal;
+    line-height: 1.5;
+    border-radius: 5px;
+}
+.consumable-name, .consumable-value { display: block; }
+.consumable-value { margin-top: 2px; font-size: 11px; opacity: 0.8; }
+
 .mj-divider { margin: 12px 0 !important; }
 
 .mj-action-bar { display: flex; gap: 12px; margin: 6px 0 0; }
@@ -766,12 +755,6 @@
 .stat-value.gain.pofang    { color: #8B0000; }
 
 .gain-header { justify-content: space-between; width: 100%; }
-.ref-skill-select { width: 140px; }
-.ref-skill-select >>> .el-input__inner {
-    border-color: rgba(160, 28, 28, 0.3);
-    color: #8B0000;
-    font-weight: 600;
-}
 
 .mj-dialog >>> .el-dialog__header {
     background: linear-gradient(90deg, #8B0000 0%, #a01c1c 100%);

@@ -4,7 +4,7 @@
 // ---------- 技能基础系数常量 ----------
 export const COEFS = {
     // 绕背驱夜断愁  260*1.1*1.05*1.05*1.05  lv29  已计算绕背
-    驱夜断愁: 1.2604 * 1.3 * 1.6 * 3,
+    驱夜断愁: 1.2604 * 1.3 * 1.6,
     // 日破 单体  lv32
     日破: 3.327335615780859,
     月潮: 12.0,
@@ -138,27 +138,90 @@ export const comboTagType = {
     '圣裁刑晷(原地)': 'success',
 };
 
+// ---------- 小吃小药：同类单选，不同类别可叠加 ----------
+// 数值来自提供的苍生铸世消耗品资料；状元红按确认值增加92元气。
+export const consumableGroups = [
+    {
+        key: 'food', label: '小吃',
+        options: [
+            { id: 'food-attack-158', name: '云州刀削面·精（攻击）', stat: '基础攻击', value: 158 },
+            { id: 'food-overcome-158', name: '山城毛血旺·精（破防）', stat: '破防值', value: 158 },
+            { id: 'food-attack-126', name: '云州刀削面（攻击）', stat: '基础攻击', value: 126 },
+            { id: 'food-overcome-126', name: '山城毛血旺（破防）', stat: '破防值', value: 126 },
+        ],
+    },
+    {
+        key: 'medicine', label: '小药',
+        options: [
+            { id: 'medicine-attack-203', name: '中原破阵丹·精（攻击）', stat: '基础攻击', value: 203 },
+            { id: 'medicine-overcome-203', name: '渝州摧锋丹·精（破防）', stat: '破防值', value: 203 },
+            { id: 'medicine-attack-162', name: '中原破阵丹（攻击）', stat: '基础攻击', value: 162 },
+            { id: 'medicine-overcome-162', name: '渝州摧锋丹（破防）', stat: '破防值', value: 162 },
+        ],
+    },
+    {
+        key: 'weapon', label: '武器附魔',
+        options: [
+            { id: 'weapon-attack-135', name: '苍生·坠宵淬晶（攻击）', stat: '基础攻击', value: 135 },
+            { id: 'weapon-attack-108', name: '苍生·坠宵熔锭（攻击）', stat: '基础攻击', value: 108 },
+        ],
+    },
+    {
+        key: 'wine', label: '元气酒',
+        options: [
+            { id: 'wine-yuanqi-92', name: '状元红·旬又三(元气)', stat: '元气', value: 92 },
+        ],
+    },
+    {
+        key: 'cooking', label: '创意料理',
+        options: [
+            { id: 'cooking-overcome-156', name: '创意料理（-气血+破防）', stat: '破防值', value: 156 },
+            { id: 'cooking-attack-156', name: '创意料理（-气血+攻击）', stat: '基础攻击', value: 156 },
+        ],
+    },
+    {
+        key: 'banquet', label: '团队宴席',
+        options: [
+            { id: 'banquet-yuanqi-143', name: '巴渝珍馐宴', stat: '元气', value: 143 },
+            { id: 'banquet-yuanqi-179', name: '长安珍馐宴', stat: '元气', value: 179 },
+        ],
+    },
+    {
+        key: 'perfume', label: '家园香水',
+        options: [
+            { id: 'perfume-overcome-16', name: '煦风·宁为秋霜（破防）', stat: '破防值', value: 16 },
+            { id: 'perfume-critical-16', name: '煦风·燕燕于飞（会心）', stat: '会心值', value: 16 },
+        ],
+    },
+];
+
 // ---------- 苍生铸世基础属性（50级角色） ----------
 // https://www.jx3box.com/bps/109665 （2026-10-29，焚影心法转换）
 // https://www.jx3box.com/bps/109685 （2026-10-31，正式服属性体系）
 // 裸面板基础攻击已含元气固有转换0.19和心法固定攻击2662；
-// 裸面板会心/破防也已含元气贡献，只对 extraYuanqi 补齐新增部分。
+// 裸面板会心/破防也已含元气贡献，只对消耗品和 extraYuanqi 补齐新增部分。
 // extraYuanqi 用于计算额外1点元气收益，不是重新录入一份游戏面板。
 export function buildCtxFromState(s, extraYuanqi = 0) {
     const b = (v) => (v ? 1 : 0);
     const n = (v) => Number.isFinite(Number(v)) ? Math.max(0, Number(v)) : 0;
-    const yqBonus = n(extraYuanqi);
+    const bonuses = { 元气: 0, 基础攻击: 0, 会心值: 0, 破防值: 0 };
+    for (const group of consumableGroups) {
+        const selected = s.consumables && s.consumables[group.key];
+        const option = group.options.find((item) => item.id === selected);
+        if (option) bonuses[option.stat] += option.value;
+    }
+    const yqBonus = bonuses.元气 + n(extraYuanqi);
 
-    // 旧版小药、附魔和腰坠固定点数未有新版依据，开关不再参与计算。
+    // 旧版消耗品布尔开关不再读取；腰坠仍缺少新版数值，不参与计算。
     const 面板元气 = n(s.元气) + yqBonus;
-    const 面板基础攻击 = n(s.基础攻击) + 0.19 * yqBonus;
+    const 面板基础攻击 = n(s.基础攻击) + bonuses.基础攻击 + 0.19 * yqBonus;
     // 沿用原页面的增益层：阵法/天地只放大基础攻击，心法额外攻击单独相加。
     const 面板攻击 = 面板元气 * 0.62 + 面板基础攻击
         * (1 + 0.05 * b(s.mingjiaozhen) + 0.1 * b(s.tiandi));
 
     const wuJianMod = (s.无间影狱 === 1 ? 1 : 0);
 
-    const huixinRaw = (n(s.会心值) + yqBonus * 0.13) / 9512.91 * 100
+    const huixinRaw = (n(s.会心值) + bonuses.会心值 + yqBonus * 0.13) / 9512.91 * 100
         + wuJianMod * 10 + 13 * b(s.mingjiaozhen);
     const huixin = Math.min(100, huixinRaw);
 
@@ -166,7 +229,7 @@ export function buildCtxFromState(s, extraYuanqi = 0) {
         + wuJianMod * 5 + 20 * b(s.mingjiaozhen);
     const huixiao = Math.min(300, huixiaoRaw);
 
-    const pofang = (n(s.破防值) + 0.06 * yqBonus) / 10378.17 * 100;
+    const pofang = (n(s.破防值) + bonuses.破防值 + 0.06 * yqBonus) / 10378.17 * 100;
 
     const neifangEff = n(s.内防值) * (1 - 0.55 * b(s.yonghuierming));
     const neifang = Math.min(80, neifangEff / (neifangEff + 10802.88) * 100);

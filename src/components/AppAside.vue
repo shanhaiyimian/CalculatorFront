@@ -9,7 +9,7 @@
 			class="aside-menu"
 		>
 			<!-- 原有游戏菜单 -->
-			<el-menu-item-group title="🎮 游戏计算">
+			<el-menu-item-group title="🎮 剑网三">
 				<el-menu-item index="/fenying">
 					<i class="el-icon-s-data"></i>
 					<span slot="title">焚影</span>
@@ -20,8 +20,8 @@
 				</el-menu-item> -->
 			</el-menu-item-group>
 
-			<!-- RAG 问答系统 -->
-			<el-menu-item-group title="🤖 AI 知识库">
+			<!-- AI 知识库侧边栏入口暂时停用，移除 v-if 即可恢复 -->
+			<el-menu-item-group v-if="false" title="🤖 AI 知识库">
 				<el-menu-item index="/chat">
 					<i class="el-icon-chat-dot-square"></i>
 					<span slot="title">AI 问答</span>
